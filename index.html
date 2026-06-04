@@ -73,6 +73,104 @@
       margin: 0;
       letter-spacing: 0;
     }
+    .neon-word {
+      border-radius: 6px;
+      color: rgba(245, 247, 251, 0.92);
+      display: inline-block;
+      position: relative;
+      isolation: isolate;
+      animation: neon-flicker 4.8s infinite;
+      -webkit-text-stroke: 1.5px rgba(66, 229, 155, 0.78);
+      paint-order: stroke fill;
+      transition: color 180ms ease, filter 180ms ease, opacity 180ms ease, text-shadow 180ms ease, transform 180ms ease;
+    }
+    .neon-word::before,
+    .neon-word::after {
+      content: "neon";
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: -1;
+    }
+    .neon-word::before {
+      color: transparent;
+      -webkit-text-stroke: 3px rgba(66, 229, 155, 0.5);
+      filter: blur(1px);
+    }
+    .neon-word::after {
+      color: rgba(66, 229, 155, 0.72);
+      filter: blur(10px);
+      opacity: 0.76;
+    }
+    .neon-word:hover,
+    .neon-word:focus-visible {
+      animation: none;
+      color: #f7fff9;
+      filter: saturate(1.2);
+      opacity: 1;
+      outline: none;
+      -webkit-text-stroke-color: rgba(66, 229, 155, 0.98);
+      text-shadow:
+        0 0 4px rgba(255, 255, 255, 0.9),
+        0 0 12px rgba(66, 229, 155, 0.92),
+        0 0 30px rgba(66, 229, 155, 0.7),
+        0 0 58px rgba(66, 229, 155, 0.38);
+      transform: translateY(-1px);
+    }
+    .neon-word:hover::before,
+    .neon-word:focus-visible::before {
+      -webkit-text-stroke-color: rgba(66, 229, 155, 0.72);
+      filter: blur(1.5px);
+    }
+    .neon-word:hover::after,
+    .neon-word:focus-visible::after {
+      opacity: 1;
+      filter: blur(14px);
+    }
+    @keyframes neon-flicker {
+      0%,
+      10%,
+      12%,
+      19%,
+      21%,
+      53%,
+      55%,
+      100% {
+        color: #ecfff6;
+        filter: saturate(1.08);
+        opacity: 1;
+        -webkit-text-stroke-color: rgba(66, 229, 155, 0.86);
+        text-shadow:
+          0 0 4px rgba(255, 255, 255, 0.72),
+          0 0 10px rgba(66, 229, 155, 0.72),
+          0 0 24px rgba(66, 229, 155, 0.4);
+      }
+      11%,
+      20%,
+      54% {
+        color: rgba(245, 247, 251, 0.62);
+        filter: saturate(0.8);
+        opacity: 0.62;
+        -webkit-text-stroke-color: rgba(66, 229, 155, 0.3);
+        text-shadow: none;
+      }
+      63% {
+        color: #dffff0;
+        filter: saturate(1);
+        opacity: 0.88;
+        -webkit-text-stroke-color: rgba(66, 229, 155, 0.62);
+        text-shadow:
+          0 0 7px rgba(66, 229, 155, 0.56),
+          0 0 18px rgba(66, 229, 155, 0.28);
+      }
+      64% {
+        color: rgba(245, 247, 251, 0.52);
+        filter: saturate(0.7);
+        opacity: 0.5;
+        -webkit-text-stroke-color: rgba(66, 229, 155, 0.2);
+        text-shadow: none;
+      }
+    }
     p {
       max-width: 650px;
       font-size: 22px;
@@ -223,6 +321,13 @@
         min-height: 42px;
       }
     }
+    @media (prefers-reduced-motion: reduce) {
+      .neon-word {
+        animation: none;
+        color: var(--green);
+        text-shadow: 0 0 12px rgba(66, 229, 155, 0.42);
+      }
+    }
   </style>
 </head>
 <body>
@@ -242,7 +347,7 @@
       </picture>
       <div class="content">
         <div class="tag">Software / AI / Automation</div>
-        <h1>Practical systems with a neon edge.</h1>
+        <h1>Practical systems with a <span class="neon-word" tabindex="0">neon</span> edge.</h1>
         <p>
           Building software, automation workflows and AI-powered tools with the directness of the 138Labs mark.
         </p>
