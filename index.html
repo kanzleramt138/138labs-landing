@@ -32,6 +32,8 @@
     }
     main {
       min-height: 100vh;
+      position: relative;
+      z-index: 1;
     }
     .hero {
       min-height: 100svh;
@@ -44,13 +46,39 @@
     }
     picture {
       width: 100%;
-      max-width: 980px;
+      max-width: 924px;
       justify-self: center;
+      animation: logo-breathe 8s ease-in-out infinite, startup-flicker 1.15s ease-out both;
+      position: relative;
+    }
+    picture::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("logo-glow-green.png") center / contain no-repeat;
+      filter: blur(10px);
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: -1;
+      animation: logo-aura 8s ease-in-out infinite;
+    }
+    picture::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("logo-glow-violet.png") center / contain no-repeat;
+      filter: blur(10px);
+      opacity: 0.54;
+      pointer-events: none;
+      z-index: -1;
+      animation: logo-aura 8s ease-in-out infinite reverse;
     }
     .hero-logo {
       width: 100%;
       height: auto;
       display: block;
+      position: relative;
+      z-index: 1;
     }
     .content {
       width: min(100%, 980px);
@@ -94,13 +122,13 @@
     }
     .neon-word::before {
       color: transparent;
-      -webkit-text-stroke: 3px rgba(66, 229, 155, 0.5);
+      -webkit-text-stroke: 2px rgba(66, 229, 155, 0.36);
       filter: blur(1px);
     }
     .neon-word::after {
-      color: rgba(66, 229, 155, 0.72);
-      filter: blur(10px);
-      opacity: 0.76;
+      color: rgba(66, 229, 155, 0.5);
+      filter: blur(8px);
+      opacity: 0.48;
     }
     .neon-word:hover,
     .neon-word:focus-visible {
@@ -111,21 +139,21 @@
       outline: none;
       -webkit-text-stroke-color: rgba(66, 229, 155, 0.98);
       text-shadow:
-        0 0 4px rgba(255, 255, 255, 0.9),
-        0 0 12px rgba(66, 229, 155, 0.92),
-        0 0 30px rgba(66, 229, 155, 0.7),
-        0 0 58px rgba(66, 229, 155, 0.38);
+        0 0 3px rgba(255, 255, 255, 0.68),
+        0 0 9px rgba(66, 229, 155, 0.7),
+        0 0 22px rgba(66, 229, 155, 0.44),
+        0 0 38px rgba(66, 229, 155, 0.22);
       transform: translateY(-1px);
     }
     .neon-word:hover::before,
     .neon-word:focus-visible::before {
-      -webkit-text-stroke-color: rgba(66, 229, 155, 0.72);
-      filter: blur(1.5px);
+      -webkit-text-stroke-color: rgba(66, 229, 155, 0.48);
+      filter: blur(1px);
     }
     .neon-word:hover::after,
     .neon-word:focus-visible::after {
-      opacity: 1;
-      filter: blur(14px);
+      opacity: 0.62;
+      filter: blur(10px);
     }
     @keyframes neon-flicker {
       0%,
@@ -141,18 +169,20 @@
         opacity: 1;
         -webkit-text-stroke-color: rgba(66, 229, 155, 0.86);
         text-shadow:
-          0 0 4px rgba(255, 255, 255, 0.72),
-          0 0 10px rgba(66, 229, 155, 0.72),
-          0 0 24px rgba(66, 229, 155, 0.4);
+          0 0 3px rgba(255, 255, 255, 0.5),
+          0 0 8px rgba(66, 229, 155, 0.52),
+          0 0 18px rgba(66, 229, 155, 0.26);
       }
       11%,
       20%,
       54% {
-        color: rgba(245, 247, 251, 0.62);
-        filter: saturate(0.8);
-        opacity: 0.62;
-        -webkit-text-stroke-color: rgba(66, 229, 155, 0.3);
-        text-shadow: none;
+        color: rgba(236, 255, 246, 0.82);
+        filter: saturate(0.95);
+        opacity: 0.86;
+        -webkit-text-stroke-color: rgba(66, 229, 155, 0.52);
+        text-shadow:
+          0 0 4px rgba(66, 229, 155, 0.28),
+          0 0 10px rgba(66, 229, 155, 0.12);
       }
       63% {
         color: #dffff0;
@@ -160,15 +190,15 @@
         opacity: 0.88;
         -webkit-text-stroke-color: rgba(66, 229, 155, 0.62);
         text-shadow:
-          0 0 7px rgba(66, 229, 155, 0.56),
-          0 0 18px rgba(66, 229, 155, 0.28);
+          0 0 6px rgba(66, 229, 155, 0.42),
+          0 0 14px rgba(66, 229, 155, 0.18);
       }
       64% {
-        color: rgba(245, 247, 251, 0.52);
-        filter: saturate(0.7);
-        opacity: 0.5;
-        -webkit-text-stroke-color: rgba(66, 229, 155, 0.2);
-        text-shadow: none;
+        color: rgba(236, 255, 246, 0.78);
+        filter: saturate(0.9);
+        opacity: 0.82;
+        -webkit-text-stroke-color: rgba(66, 229, 155, 0.46);
+        text-shadow: 0 0 5px rgba(66, 229, 155, 0.18);
       }
     }
     p {
@@ -177,6 +207,22 @@
       line-height: 1.55;
       color: var(--muted);
       margin: 0;
+    }
+    .intro {
+      width: fit-content;
+      max-width: min(100%, 720px);
+      margin: 8px 0 12px;
+      padding: 12px 0 12px 18px;
+      border-left: 1px solid rgba(66, 229, 155, 0.36);
+      color: #d5dbea;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+    .intro::before {
+      content: "> ";
+      color: var(--green);
+      font-weight: 700;
     }
     .links {
       display: flex;
@@ -196,25 +242,39 @@
       border-radius: 8px;
       padding: 10px 14px;
       font-weight: 700;
-      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+      transition: border-color 160ms ease, box-shadow 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
     }
     .links a:nth-child(1):hover,
     .links a:nth-child(1):focus-visible {
       border-color: var(--green);
+      box-shadow:
+        0 0 0 1px rgba(66, 229, 155, 0.18),
+        0 0 20px rgba(66, 229, 155, 0.28);
     }
     .links a:nth-child(2):hover,
     .links a:nth-child(2):focus-visible {
       border-color: var(--violet);
+      box-shadow:
+        0 0 0 1px rgba(124, 77, 255, 0.18),
+        0 0 20px rgba(124, 77, 255, 0.32);
     }
     .links a:nth-child(3):hover,
     .links a:nth-child(3):focus-visible {
       border-color: var(--green);
+      box-shadow:
+        0 0 0 1px rgba(66, 229, 155, 0.18),
+        0 0 20px rgba(66, 229, 155, 0.28);
     }
     .links a:hover,
     .links a:focus-visible {
       background: rgba(18, 21, 38, 0.92);
+      color: #ffffff;
       transform: translateY(-1px);
       outline: none;
+    }
+    .links a:hover svg,
+    .links a:focus-visible svg {
+      filter: drop-shadow(0 0 8px currentColor);
     }
     .links svg {
       width: 18px;
@@ -239,6 +299,52 @@
     .legal a:focus-visible {
       color: var(--green);
       outline: none;
+    }
+    @keyframes logo-breathe {
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-2px) scale(1.006);
+      }
+    }
+    @keyframes logo-aura {
+      0%,
+      100% {
+        opacity: 0.42;
+        transform: scale(0.985);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.025);
+      }
+    }
+    @keyframes startup-flicker {
+      0% {
+        opacity: 0.15;
+        filter: brightness(0.6) saturate(0.6);
+      }
+      9% {
+        opacity: 1;
+        filter: brightness(1.35) saturate(1.2);
+      }
+      15% {
+        opacity: 0.38;
+        filter: brightness(0.7) saturate(0.7);
+      }
+      24%,
+      31% {
+        opacity: 1;
+        filter: brightness(1.22) saturate(1.15);
+      }
+      27% {
+        opacity: 0.52;
+        filter: brightness(0.75) saturate(0.8);
+      }
+      100% {
+        opacity: 1;
+      }
     }
     @media (max-width: 1080px) {
       .hero-logo,
@@ -293,6 +399,12 @@
         font-size: 17px;
         line-height: 1.5;
       }
+      .intro {
+        margin: 4px 0 10px;
+        padding-left: 14px;
+        font-size: 15px;
+        line-height: 1.6;
+      }
       .links {
         width: 100%;
         gap: 10px;
@@ -322,6 +434,15 @@
       }
     }
     @media (prefers-reduced-motion: reduce) {
+      picture {
+        animation: none;
+      }
+      picture::before {
+        animation: none;
+      }
+      picture::after {
+        animation: none;
+      }
       .neon-word {
         animation: none;
         color: var(--green);
@@ -335,20 +456,20 @@
     <section class="hero" aria-label="138Labs">
       <picture>
         <source
+          media="(max-width: 860px)"
           type="image/png"
           srcset="
             logo-transparent-360.png 360w,
             logo-transparent-520.png 520w,
-            logo-transparent-720.png 720w,
-            logo-transparent-980.png 980w"
-          sizes="(max-width: 380px) 340px, (max-width: 620px) 460px, (max-width: 860px) 680px, (max-width: 1080px) 860px, 980px"
+            logo-transparent-720.png 720w"
+          sizes="(max-width: 380px) 340px, (max-width: 620px) 460px, 680px"
         />
         <img class="hero-logo" src="logo.svg" alt="138Labs logo" width="924" height="420" />
       </picture>
       <div class="content">
         <div class="tag">Software / AI / Automation</div>
         <h1>Practical systems with a <span class="neon-word" tabindex="0">neon</span> edge.</h1>
-        <p>
+        <p class="intro">
           Building software, automation workflows and AI-powered tools with the directness of the 138Labs mark.
         </p>
         <nav class="links" aria-label="Social links">
