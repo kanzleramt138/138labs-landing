@@ -3,28 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>138Labs</title>
+  <title>138Labs — KI testbar machen</title>
   <meta
     name="description"
-    content="138 Labs unterstützt Unternehmen und Organisationen dabei, KI-Potenziale zu erkennen, Ideen schnell zu testen und praktisch umzusetzen."
+    content="138 Labs entwickelt KI-Prototypen, Automatisierungen und Workshops für Organisationen, die konkrete KI-Anwendungsfälle testen wollen."
   />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="assets/fonts/fonts.css" />
   <style>
     :root {
-      --bg: #06070b;
-      --bg-soft: #0d1017;
-      --panel: rgba(15, 18, 28, 0.78);
-      --panel-strong: #10131d;
-      --text: #f4f7fb;
-      --muted: #a9b2c3;
-      --line: rgba(255, 255, 255, 0.1);
+      --ink: #f4f7fb;
+      --ink-soft: #c8cedb;
+      --muted: #8d94a6;
+      --paper: #ede4d1;
+      --paper-soft: #d9ccb5;
+      --charcoal: #05060d;
+      --charcoal-2: #0a0c16;
+      --charcoal-3: #11141f;
       --green: #42e59b;
-      --green-soft: rgba(66, 229, 155, 0.16);
+      --green-glow: rgba(66, 229, 155, 0.22);
       --violet: #7c4dff;
-      --max: 1160px;
-      --radius: 22px;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+      --violet-glow: rgba(124, 77, 255, 0.26);
+      --red: #f05d4f;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.14);
+      --max: 1200px;
+      --serif: "Fraunces", Georgia, "Times New Roman", ui-serif, serif;
+      --sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
     }
 
     * {
@@ -37,820 +44,1847 @@
 
     body {
       margin: 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(66, 229, 155, 0.16), transparent 28%),
-        radial-gradient(circle at top right, rgba(124, 77, 255, 0.14), transparent 24%),
-        linear-gradient(180deg, #07090f 0%, #090b11 24%, #0d1017 24%, #0d1017 100%);
+      background: var(--charcoal);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.55;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    a {
-      color: inherit;
+    /* ===========================================================
+       Cinematic background: spectral lasers + drifting bubbles
+       =========================================================== */
+    .scene {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 12% 8%, rgba(66, 229, 155, 0.10), transparent 60%),
+        radial-gradient(ellipse 70% 55% at 90% 18%, rgba(124, 77, 255, 0.13), transparent 60%),
+        radial-gradient(ellipse 100% 70% at 50% 110%, rgba(124, 77, 255, 0.06), transparent 60%),
+        linear-gradient(180deg, #05060d 0%, #06080f 40%, #07091a 100%);
     }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 35%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 35%, transparent 70%);
+      opacity: 0.28;
+    }
+
+    /* Soft veil — dims bubbles & lasers behind content for readability */
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(5, 6, 13, 0.35), transparent 70%),
+        linear-gradient(180deg, rgba(5, 6, 13, 0.25) 0%, transparent 30%, transparent 70%, rgba(5, 6, 13, 0.4) 100%);
+      pointer-events: none;
+    }
+
+    .lasers {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .laser {
+      position: absolute;
+      left: -10%;
+      width: 120%;
+      height: 1px;
+      transform-origin: 50% 50%;
+      opacity: 0.3;
+      animation: laser-shimmer 11s ease-in-out infinite;
+      filter: drop-shadow(0 0 4px currentColor);
+    }
+
+    .laser.green { color: var(--green); }
+    .laser.violet { color: var(--violet); }
+    .laser.cyan { color: #4dd6ff; }
+
+    .laser::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, currentColor 32%, currentColor 68%, transparent 100%);
+    }
+
+    .laser.l1 { top: 22%; transform: rotate(-8deg); animation-delay: 0s; opacity: 0.32; }
+    .laser.l2 { top: 38%; transform: rotate(12deg); animation-delay: -2.4s; opacity: 0.22; }
+    .laser.l3 { top: 60%; transform: rotate(-5deg); animation-delay: -4.8s; opacity: 0.26; }
+    .laser.l4 { top: 78%; transform: rotate(9deg); animation-delay: -1.2s; opacity: 0.2; }
+
+    @keyframes laser-shimmer {
+      0%, 100% { transform: rotate(var(--r, -8deg)) translateX(0); opacity: 0.18; }
+      50%      { opacity: 0.4; }
+    }
+
+    .bubbles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.10), transparent 40%),
+        radial-gradient(circle at 70% 75%, rgba(66, 229, 155, 0.10), transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(124, 77, 255, 0.06), transparent 65%);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow:
+        inset 0 0 24px rgba(255, 255, 255, 0.04),
+        0 0 30px rgba(124, 77, 255, 0.07);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      filter: blur(0.5px);
+      animation: drift 26s ease-in-out infinite;
+      opacity: 0.35;
+    }
+
+    .bubble.b1 { width: 220px; height: 220px; top: 14%; left: 72%; animation-delay: 0s; opacity: 0.3; }
+    .bubble.b2 { width: 120px; height: 120px; top: 30%; left: 6%;  animation-delay: -6s; opacity: 0.28; }
+    .bubble.b3 { width: 70px;  height: 70px;  top: 64%; left: 88%; animation-delay: -11s; opacity: 0.25; }
+    .bubble.b4 { width: 40px;  height: 40px;  top: 78%; left: 22%; animation-delay: -15s; opacity: 0.3; }
+    .bubble.b5 { width: 28px;  height: 28px;  top: 18%; left: 42%; animation-delay: -3s; opacity: 0.3; }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(18px, -22px) scale(1.04); }
+      66%      { transform: translate(-12px, 14px) scale(0.98); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .laser, .bubble, .hero-logo-wrap, .hero-logo-wrap::before, .hero-logo-wrap::after { animation: none !important; }
+    }
+
+    /* ===========================================================
+       Layout primitives
+       =========================================================== */
+    a { color: inherit; }
 
     .shell {
       width: min(calc(100% - 40px), var(--max));
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
+    main, header, footer { position: relative; z-index: 1; }
+
+    section {
+      padding: 112px 0;
+      position: relative;
+    }
+
+    section + section {
+      border-top: 1px solid var(--line);
+    }
+
+    h1, h2, h3, h4, p { margin-top: 0; }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      border-radius: 999px;
+    }
+
+    /* ===========================================================
+       Site header
+       =========================================================== */
     .site-header {
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(16px);
-      background: rgba(6, 7, 11, 0.72);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      z-index: 30;
+      background: rgba(5, 6, 13, 0.62);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
     }
 
     .site-header .shell {
+      min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      padding: 18px 0;
     }
 
     .brand {
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      font-weight: 800;
       text-decoration: none;
-      letter-spacing: 0.04em;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
-    .brand-mark {
-      width: 14px;
-      height: 14px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--green), #9df8cb);
-      box-shadow: 0 0 18px rgba(66, 229, 155, 0.5);
-      flex: 0 0 auto;
+    .brand img {
+      width: 82px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(124, 77, 255, 0.35));
+    }
+
+    .brand .brand-text {
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
 
     .site-nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 18px;
       align-items: center;
+      gap: 22px;
     }
 
     .site-nav a {
-      color: var(--muted);
-      text-decoration: none;
+      color: var(--ink-soft);
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 160ms ease;
     }
 
     .site-nav a:hover,
     .site-nav a:focus-visible {
-      color: var(--text);
+      color: var(--ink);
       outline: none;
     }
 
     .nav-cta {
-      padding: 10px 14px;
+      color: var(--charcoal) !important;
+      background: var(--green);
       border-radius: 999px;
-      border: 1px solid rgba(66, 229, 155, 0.3);
-      background: rgba(66, 229, 155, 0.08);
-      color: var(--text);
+      padding: 9px 16px;
+      font-weight: 700;
+      transition: box-shadow 200ms ease, transform 200ms ease;
     }
 
-    main {
-      display: block;
+    .nav-cta:hover,
+    .nav-cta:focus-visible {
+      box-shadow: 0 0 0 4px rgba(66, 229, 155, 0.18), 0 0 24px rgba(66, 229, 155, 0.35);
+      transform: translateY(-1px);
     }
 
-    section {
-      padding: 92px 0;
-    }
-
+    /* ===========================================================
+       Hero
+       =========================================================== */
     .hero {
-      padding-top: 48px;
-      min-height: calc(100svh - 76px);
+      min-height: min(820px, calc(100svh - 72px));
+      padding: clamp(36px, 7svh, 56px) 0 clamp(56px, 10svh, 82px);
       display: flex;
       align-items: center;
+      overflow: hidden;
     }
 
-    .hero-grid {
+    .hero .shell {
+      max-width: 1200px;
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-      gap: 44px;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 48px;
       align-items: center;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(66, 229, 155, 0.22);
-      background: rgba(66, 229, 155, 0.08);
-      color: #dffcef;
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    .hero-content {
+      max-width: 60ch;
     }
 
-    .hero-copy h1 {
-      margin: 20px 0 18px;
-      max-width: 12ch;
-      font-size: clamp(3.6rem, 7vw, 6.4rem);
-      line-height: 0.95;
-      letter-spacing: -0.04em;
+    .hero-logo-wrap {
+      width: min(100%, clamp(360px, 42vw, 520px));
+      margin: 0 -32px 0 auto;
+      justify-self: end;
+      position: relative;
     }
 
-    .hero-copy p {
-      margin: 0;
-      max-width: 62ch;
-      color: var(--muted);
-      font-size: clamp(1.05rem, 1.6vw, 1.3rem);
-      line-height: 1.72;
+    .hero-logo-wrap::before,
+    .hero-logo-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("logo-glow-green.png") center / contain no-repeat;
+      filter: blur(14px);
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: -1;
+      animation: logo-aura 9s ease-in-out infinite;
     }
 
-    .hero-actions,
-    .contact-actions {
+    .hero-logo-wrap::after {
+      background-image: url("logo-glow-violet.png");
+      animation-direction: reverse;
+    }
+
+    .hero-logo {
+      display: block;
+      width: 100%;
+      height: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      max-width: 16ch;
+      margin-bottom: 24px;
+      margin-top: 18px;
+      font-family: var(--serif);
+      font-size: clamp(42px, 5.6vw, 72px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 24px rgba(5, 6, 13, 0.55);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 400;
+    }
+
+    .hero h1 .accent {
+      display: block;
+      background: linear-gradient(92deg, var(--green) 0%, #9df8cb 35%, var(--violet) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 500;
+      font-family: var(--sans);
+      letter-spacing: -0.025em;
+    }
+
+    .intro {
+      position: relative;
+      width: fit-content;
+      max-width: min(100%, 720px);
+      margin: 8px 0 12px;
+      padding: 12px 0 12px 18px;
+      border-left: 1px solid rgba(66, 229, 155, 0.36);
+      color: #d5dbea;
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      letter-spacing: 0;
+    }
+
+    .intro::before {
+      content: ">";
+      display: inline-block;
+      margin-right: 0.35em;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: inherit;
+      font-weight: 700;
+      transform: translateY(-0.02em);
+    }
+
+    .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       margin-top: 28px;
     }
 
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-top: clamp(24px, 5svh, 40px);
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-meta span::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* ===========================================================
+       Buttons
+       =========================================================== */
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
       min-height: 48px;
-      padding: 12px 18px;
+      border: 1px solid var(--line-strong);
       border-radius: 999px;
-      border: 1px solid var(--line);
+      padding: 12px 22px;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 15px;
       text-decoration: none;
-      font-weight: 800;
-      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+      transition: border-color 180ms ease, box-shadow 200ms ease, color 180ms ease, background 180ms ease, transform 200ms ease;
     }
+
+    .button .arrow {
+      display: inline-block;
+      transition: transform 200ms ease;
+    }
+
+    .button:hover .arrow,
+    .button:focus-visible .arrow { transform: translateX(3px); }
 
     .button:hover,
     .button:focus-visible {
-      transform: translateY(-1px);
       outline: none;
+      transform: translateY(-1px);
     }
 
     .button-primary {
-      border-color: rgba(66, 229, 155, 0.32);
-      background: linear-gradient(135deg, rgba(66, 229, 155, 0.16), rgba(66, 229, 155, 0.08));
+      border-color: transparent;
+      background: var(--green);
+      color: var(--charcoal);
+    }
+
+    .button-primary:hover,
+    .button-primary:focus-visible {
+      box-shadow:
+        0 0 0 1px rgba(66, 229, 155, 0.25),
+        0 8px 32px rgba(66, 229, 155, 0.35);
     }
 
     .button-secondary {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
     }
 
-    .hero-panel {
-      position: relative;
-      padding: 28px;
-      border-radius: 28px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-        rgba(9, 12, 19, 0.88);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: var(--shadow);
+    .button-secondary:hover,
+    .button-secondary:focus-visible {
+      border-color: rgba(124, 77, 255, 0.6);
+      background: rgba(124, 77, 255, 0.08);
+      box-shadow: 0 0 0 1px rgba(124, 77, 255, 0.18), 0 8px 28px rgba(124, 77, 255, 0.22);
+    }
+
+    /* ===========================================================
+       Insight strip (between hero & services)
+       =========================================================== */
+    .insight-strip {
+      padding: 48px 0 88px;
+    }
+
+    .insight-card {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1.45fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(13, 16, 26, 0.6);
+      backdrop-filter: blur(8px);
       overflow: hidden;
     }
 
-    .hero-panel::before {
-      content: "";
-      position: absolute;
-      inset: auto -10% -28% auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(124, 77, 255, 0.26), transparent 70%);
-      pointer-events: none;
+    .insight-side,
+    .insight-main {
+      padding: 32px;
     }
 
-    .panel-label {
+    .insight-side {
+      background: linear-gradient(170deg, rgba(66, 229, 155, 0.10), rgba(66, 229, 155, 0.02));
+      border-right: 1px solid var(--line);
+    }
+
+    .insight-side .small-label {
+      display: block;
+      margin-bottom: 32px;
       color: var(--green);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.12em;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
 
-    .panel-title {
-      margin: 18px 0 16px;
-      font-size: 1.35rem;
-      line-height: 1.35;
-    }
-
-    .flow-list,
-    .metric-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .flow-item,
-    .metric-item {
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .flow-item strong,
-    .metric-item strong {
+    .insight-side strong,
+    .insight-main strong {
       display: block;
-      margin-bottom: 6px;
-      font-size: 0.98rem;
+      margin-bottom: 10px;
+      font-size: 19px;
+      font-weight: 700;
     }
 
-    .flow-item span,
-    .metric-item span {
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.55;
+    .insight-side p,
+    .insight-main p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin-bottom: 0;
     }
 
+    .insight-path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .insight-path span {
+      border: 1px solid rgba(66, 229, 155, 0.28);
+      background: rgba(66, 229, 155, 0.06);
+      color: #dff6e9;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ===========================================================
+       Section heads
+       =========================================================== */
     .section-head {
       display: grid;
-      gap: 14px;
-      margin-bottom: 36px;
-      max-width: 760px;
+      grid-template-columns: 0.35fr 0.65fr;
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 56px;
     }
 
     .section-head h2 {
-      margin: 0;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1;
-      letter-spacing: -0.04em;
+      max-width: 18ch;
+      margin-bottom: 0;
+      font-family: var(--serif);
+      font-size: clamp(36px, 5.2vw, 64px);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(5, 6, 13, 0.5);
     }
 
-    .section-head p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.7;
+    .section-head h2 em {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.74);
+      font-weight: 400;
     }
 
-    .experience-strip {
-      padding-top: 28px;
+    .section-head p { max-width: 52ch; }
+
+    #leistungen .section-head .intro,
+    #arbeitsweise .section-head .intro,
+    #ueber .section-head .intro,
+    #kontakt .section-head .intro {
+      width: 100%;
+      max-width: none;
     }
 
-    .strip-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+    .trust-band p.intro {
+      width: 100%;
+      max-width: none;
     }
 
-    .strip-card,
-    .service-card,
-    .theme-card,
-    .about-card,
-    .contact-card {
-      padding: 22px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-      background: var(--panel);
-      box-shadow: var(--shadow);
-    }
-
-    .strip-card strong,
-    .service-card h3,
-    .theme-card h3,
-    .about-card h3,
-    .contact-card h3 {
-      display: block;
-      margin: 0 0 10px;
-      font-size: 1.05rem;
-    }
-
-    .strip-card p,
-    .service-card p,
-    .theme-card p,
-    .about-card p,
-    .contact-card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
+    /* ===========================================================
+       Services
+       =========================================================== */
     .services-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 18px;
     }
 
-    .card-index {
+    .service-card {
+      position: relative;
+      min-height: 420px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(20, 24, 38, 0.7), rgba(11, 14, 24, 0.7));
+      backdrop-filter: blur(6px);
+      transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(124, 77, 255, 0.20), transparent 55%);
+      opacity: 0;
+      transition: opacity 280ms ease;
+      pointer-events: none;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124, 77, 255, 0.45);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 77, 255, 0.2);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-card > * { position: relative; }
+
+    .service-card .number {
       display: inline-flex;
-      width: 34px;
-      height: 34px;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 18px;
-      border-radius: 10px;
-      background: var(--green-soft);
+      gap: 10px;
+      margin-bottom: 56px;
       color: var(--green);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
+    .service-card .number::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(66, 229, 155, 0.5), transparent);
+      min-width: 60px;
+    }
+
+    .service-card h3,
+    .field-card h3,
+    .about-card h3,
+    .contact-card h3 {
+      margin-bottom: 14px;
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    .service-card > p,
+    .field-card > p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    .service-card ul,
+    .field-card ul,
+    .about-card ul {
+      display: grid;
+      gap: 10px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .service-card li,
+    .field-card li,
+    .about-card li {
+      position: relative;
+      padding-left: 22px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .service-card li::before,
+    .field-card li::before,
+    .about-card li::before {
+      content: "";
+      position: absolute;
+      top: 0.62em;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    /* ===========================================================
+       Thread / Fields
+       =========================================================== */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: start;
+      width: min(100%, 600px);
+      margin: 0 auto;
+    }
+
+    .field-card {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(11, 14, 24, 0.85);
+      backdrop-filter: blur(6px);
+      transform-origin: 50% 50%;
+      will-change: transform, box-shadow;
+      transition:
+        transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 280ms ease,
+        background 280ms ease,
+        opacity 320ms ease;
+    }
+
+    .field-card:not([open]):hover {
+      transform: translateY(-3px);
+      border-color: rgba(66, 229, 155, 0.28);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.42);
+    }
+
+    .field-card[open] {
+      z-index: 20;
+      background: rgba(22, 26, 42, 0.95);
+      border-color: rgba(124, 77, 255, 0.5);
+      border-radius: 22px;
+      transform: translateY(-4px);
+      box-shadow:
+        0 32px 70px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(124, 77, 255, 0.25),
+        0 0 60px rgba(124, 77, 255, 0.22);
+    }
+
+    /* Push neighbours back when one card is open */
+    .fields-grid:has(.field-card[open]) .field-card:not([open]) {
+      opacity: 0.5;
+      transform: scale(0.99);
+      filter: saturate(0.85);
+    }
+
+    .field-card summary {
+      position: relative;
+      z-index: 3;
+      cursor: pointer;
+      list-style: none;
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      transition: background 200ms ease;
+      user-select: none;
+      border-radius: inherit;
+    }
+
+    .field-card[open] summary {
+      background:
+        linear-gradient(135deg, rgba(124, 77, 255, 0.1), transparent 62%),
+        rgba(255, 255, 255, 0.018);
+      border-radius: 22px 22px 14px 14px;
+    }
+
+    .field-card summary::-webkit-details-marker { display: none; }
+    .field-card summary::marker { content: ""; }
+
+    .field-card:not([open]) summary:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .field-card summary:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px rgba(66, 229, 155, 0.4);
+    }
+
+    .field-card .field-num {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--violet);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
-    .service-points,
-    .theme-points {
-      display: grid;
-      gap: 8px;
-      margin-top: 18px;
-      color: #d8deea;
-      font-size: 0.95rem;
+    .field-card summary h3 {
+      margin: 0;
     }
 
-    .service-points span,
-    .theme-points span {
+    .field-toggle {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--green);
+      background: rgba(66, 229, 155, 0.06);
+      transition:
+        transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        background 280ms ease,
+        border-color 280ms ease,
+        color 280ms ease,
+        box-shadow 280ms ease;
+    }
+
+    .field-card:hover .field-toggle {
+      background: rgba(66, 229, 155, 0.18);
+      border-color: var(--green);
+      color: var(--green);
+      box-shadow: 0 0 16px var(--green-glow);
+    }
+
+    .field-card[open] .field-toggle {
+      transform: rotate(45deg);
+      background: rgba(124, 77, 255, 0.16);
+      border-color: var(--violet);
+      color: var(--violet);
+      box-shadow: 0 0 16px var(--violet-glow);
+    }
+
+    .field-body {
       position: relative;
-      padding-left: 16px;
+      margin: 14px 22px 22px;
+      padding: 32px 30px 30px;
+      border: 1px solid rgba(124, 77, 255, 0.5);
+      border-radius: 34px 34px 30px 30px;
+      background:
+        linear-gradient(180deg, rgba(22, 26, 42, 0.95), rgba(13, 17, 29, 0.98) 42px),
+        linear-gradient(155deg, rgba(124, 77, 255, 0.14), rgba(66, 229, 155, 0.06) 52%, transparent 100%),
+        rgba(13, 17, 29, 0.98);
+      box-shadow:
+        0 28px 62px rgba(0, 0, 0, 0.5),
+        0 0 42px rgba(124, 77, 255, 0.16);
+      backdrop-filter: blur(10px);
+      animation: field-expand 360ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform-origin: top center;
     }
 
-    .service-points span::before,
-    .theme-points span::before {
+    .field-body p {
+      margin: 0 0 14px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    .field-body ul {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .field-body li {
+      position: relative;
+      padding-left: 22px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .field-body li::before {
       content: "";
       position: absolute;
+      top: 0.62em;
       left: 0;
-      top: 0.7em;
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
       background: var(--green);
-      transform: translateY(-50%);
+      box-shadow: 0 0 8px var(--green-glow);
     }
 
-    .themes {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0));
+    @keyframes field-expand {
+      0%   { opacity: 0; transform: translateY(-14px) scale(0.96); }
+      55%  { opacity: 1; }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .themes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .theme-card {
-      min-height: 200px;
+    /* ===========================================================
+       Process
+       =========================================================== */
+    .process {
+      background:
+        linear-gradient(180deg, rgba(124, 77, 255, 0.06), transparent 35%),
+        rgba(7, 9, 17, 0.6);
+      backdrop-filter: blur(6px);
     }
 
     .process-grid {
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      position: relative;
     }
 
-    .process-steps {
-      display: grid;
-      gap: 14px;
+    .process-grid::before {
+      content: "";
+      position: absolute;
+      top: 38px;
+      left: 5%;
+      right: 5%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet), var(--green), transparent);
+      opacity: 0.4;
+      pointer-events: none;
     }
 
     .step {
-      display: grid;
-      grid-template-columns: 54px minmax(0, 1fr);
-      gap: 16px;
-      align-items: start;
-      padding: 18px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      position: relative;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(13, 16, 26, 0.75);
     }
 
     .step-number {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
-      background: rgba(124, 77, 255, 0.14);
-      color: #d8cbff;
-      font-weight: 800;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 24px;
+      border-radius: 12px;
+      background: rgba(124, 77, 255, 0.12);
+      border: 1px solid rgba(124, 77, 255, 0.35);
+      color: var(--violet);
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 0 18px rgba(124, 77, 255, 0.18);
     }
 
-    .step strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 1rem;
+    .step h3 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
     }
 
     .step p {
+      color: var(--ink-soft);
+      line-height: 1.6;
       margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
     }
 
-    .about-grid,
-    .contact-grid {
+    /* ===========================================================
+       Trust band
+       =========================================================== */
+    .trust-band {
+      padding: 64px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(120deg, rgba(66, 229, 155, 0.10), transparent 70%),
+        rgba(7, 9, 17, 0.7);
+    }
+
+    .trust-band .shell {
+      display: grid;
+      grid-template-columns: 0.38fr 0.62fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    .trust-band h2 {
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 0 2px 16px rgba(5, 6, 13, 0.45);
+      font-family: var(--serif);
+      font-size: clamp(26px, 2.6vw, 34px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .trust-band p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .trust-band p.intro {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    /* ===========================================================
+       About
+       =========================================================== */
+    .about-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 18px;
     }
 
+    .about-card {
+      padding: 32px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(13, 16, 26, 0.7);
+    }
+
+    .about-card.featured {
+      background:
+        linear-gradient(180deg, rgba(66, 229, 155, 0.06), rgba(11, 14, 24, 0.85)),
+        rgba(13, 16, 26, 0.7);
+      border-color: rgba(66, 229, 155, 0.22);
+    }
+
+    .about-card p {
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
     .about-card em {
-      color: #e3e8f3;
+      color: var(--ink);
       font-style: normal;
     }
 
-    .legal {
-      padding: 36px 0 48px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    .about-card.about-founder {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 152px;
+      gap: 24px;
+      align-items: stretch;
     }
 
-    .legal .shell {
+    .about-founder-copy {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .founder {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 14px;
+      gap: 18px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .founder-mark {
+      width: 100%;
+      min-height: 100%;
+      border-radius: 18px;
+      background: url("person.png") center top / cover no-repeat;
+      box-shadow: 0 0 8px rgba(124, 77, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      align-self: stretch;
+    }
+
+    .founder-text strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    .founder-text span {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
     }
 
-    .legal a {
+    /* ===========================================================
+       Contact
+       =========================================================== */
+    .contact {
+      background:
+        radial-gradient(ellipse 70% 80% at 80% 100%, rgba(124, 77, 255, 0.16), transparent 60%),
+        radial-gradient(ellipse 70% 80% at 20% 0%, rgba(66, 229, 155, 0.12), transparent 60%),
+        rgba(7, 9, 17, 0.7);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .contact-card {
+      display: flex;
+      flex-direction: column;
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(13, 16, 26, 0.75);
+      backdrop-filter: blur(8px);
+    }
+
+    .contact-card.primary {
+      background:
+        linear-gradient(160deg, rgba(66, 229, 155, 0.12), transparent 60%),
+        rgba(13, 16, 26, 0.85);
+      border-color: rgba(66, 229, 155, 0.3);
+    }
+
+    .contact-card p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    .contact-socials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .contact-card.primary .contact-socials {
+      margin-top: auto;
+      padding-top: 28px;
+    }
+
+    .contact-socials a {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(8, 10, 18, 0.7);
+      color: var(--ink);
       text-decoration: none;
+      font-size: 15px;
+      font-weight: 700;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, color 180ms ease;
     }
 
-    .legal a:hover,
-    .legal a:focus-visible {
-      color: var(--text);
+    .contact-socials a:hover,
+    .contact-socials a:focus-visible {
       outline: none;
+      transform: translateY(-1px);
+      color: #ffffff;
+      background: rgba(13, 16, 26, 0.9);
     }
 
-    @media (max-width: 1080px) {
-      .hero-grid,
-      .process-grid,
-      .about-grid,
-      .contact-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .strip-grid,
-      .services-grid,
-      .themes-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .contact-socials a:nth-child(1) {
+      border-color: rgba(66, 229, 155, 0.28);
+      box-shadow: 0 0 0 1px rgba(66, 229, 155, 0.08), 0 0 18px rgba(66, 229, 155, 0.14);
     }
 
-    @media (max-width: 760px) {
+    .contact-socials a:nth-child(1):hover,
+    .contact-socials a:nth-child(1):focus-visible {
+      border-color: var(--green);
+      box-shadow: 0 0 0 1px rgba(66, 229, 155, 0.18), 0 0 24px rgba(66, 229, 155, 0.26);
+    }
+
+    .contact-socials a:nth-child(2) {
+      border-color: rgba(124, 77, 255, 0.32);
+      box-shadow: 0 0 0 1px rgba(124, 77, 255, 0.1), 0 0 18px rgba(124, 77, 255, 0.16);
+    }
+
+    .contact-socials a:nth-child(2):hover,
+    .contact-socials a:nth-child(2):focus-visible {
+      border-color: rgba(124, 77, 255, 0.72);
+      box-shadow: 0 0 0 1px rgba(124, 77, 255, 0.18), 0 0 24px rgba(124, 77, 255, 0.28);
+    }
+
+    .contact-socials a:nth-child(3) {
+      border-color: rgba(160, 153, 255, 0.3);
+      box-shadow:
+        0 0 0 1px rgba(66, 229, 155, 0.08),
+        0 0 16px rgba(66, 229, 155, 0.12),
+        0 0 22px rgba(124, 77, 255, 0.16);
+    }
+
+    .contact-socials a:nth-child(3):hover,
+    .contact-socials a:nth-child(3):focus-visible {
+      border-color: rgba(160, 153, 255, 0.6);
+      box-shadow:
+        0 0 0 1px rgba(66, 229, 155, 0.14),
+        0 0 20px rgba(66, 229, 155, 0.18),
+        0 0 28px rgba(124, 77, 255, 0.22);
+    }
+
+    .contact-socials svg {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+      fill: currentColor;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 14px;
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .contact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .contact-list li::before {
+      content: "›";
+      color: var(--green);
+      font-family: var(--mono);
+      font-weight: 700;
+      margin-top: -2px;
+    }
+
+    /* ===========================================================
+       Footer
+       =========================================================== */
+    .site-footer {
+      padding: 56px 0 32px;
+      border-top: 1px solid var(--line);
+      background: rgba(5, 6, 13, 0.92);
+      color: var(--muted);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+
+    .footer-grid h4 {
+      margin-bottom: 16px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .footer-grid ul {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .footer-grid a {
+      color: var(--ink-soft);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+
+    .footer-grid a:hover { color: var(--green); }
+
+    .footer-brand p {
+      margin: 12px 0 0;
+      max-width: 32ch;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footer-legal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .footer-legal a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      margin-left: 18px;
+    }
+
+    .footer-legal a:hover { color: var(--green); }
+
+    /* ===========================================================
+       Reveal on scroll
+       =========================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 700ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===========================================================
+       Animations
+       =========================================================== */
+    @keyframes logo-breathe {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    @keyframes logo-aura {
+      0%, 100% { opacity: 0.42; transform: scale(0.985); }
+      50%      { opacity: 0.85; transform: scale(1.03); }
+    }
+
+    @keyframes startup-flicker {
+      0%        { opacity: 0.15; filter: brightness(0.6) saturate(0.6); }
+      9%        { opacity: 1;    filter: brightness(1.35) saturate(1.2); }
+      15%       { opacity: 0.38; filter: brightness(0.7) saturate(0.7); }
+      24%, 31%  { opacity: 1;    filter: brightness(1.22) saturate(1.15); }
+      27%       { opacity: 0.52; filter: brightness(0.75) saturate(0.8); }
+      100%      { opacity: 1; }
+    }
+
+    /* ===========================================================
+       Responsive
+       =========================================================== */
+    @media (max-width: 980px) {
+      .hero .shell { grid-template-columns: 1fr; gap: 28px; }
+      .hero-logo-wrap {
+        order: -1;
+        margin: 0 0 4px;
+        width: min(100%, 440px);
+        justify-self: start;
+      }
+      .section-head { grid-template-columns: 1fr; gap: 18px; }
+      .section-head .intro { max-width: none; }
+      .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .process-grid { grid-template-columns: 1fr; }
+      .process-grid::before { display: none; }
+      .trust-band .shell { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .insight-card { grid-template-columns: 1fr; }
+      .insight-side { border-right: 0; border-bottom: 1px solid var(--line); }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-card.about-founder { grid-template-columns: 1fr; }
+      .founder-mark { min-height: 240px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+      section { padding: 88px 0; }
+    }
+
+    @media (max-width: 700px) {
+      .shell { width: min(calc(100% - 28px), var(--max)); }
       .site-header .shell {
-        align-items: flex-start;
+        min-height: 64px;
         flex-direction: column;
-      }
-
-      section {
-        padding: 74px 0;
-      }
-
-      .hero {
-        min-height: auto;
-        padding-top: 24px;
-      }
-
-      .shell {
-        width: min(calc(100% - 28px), var(--max));
-      }
-
-      .strip-grid,
-      .services-grid,
-      .themes-grid,
-      .about-grid,
-      .contact-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .legal .shell {
         align-items: flex-start;
-        flex-direction: column;
+        padding: 14px 0;
       }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      .button {
-        transition: none;
-      }
+      .site-nav { width: 100%; gap: 14px; font-size: 13px; }
+      .hero { padding-top: 48px; padding-bottom: 64px; min-height: auto; }
+      .hero h1 { font-size: 42px; }
+      .intro { font-size: 13px; line-height: 1.6; padding-left: 14px; }
+      .field-body { margin: 12px 18px 18px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-legal { flex-direction: column; align-items: flex-start; }
+      .footer-legal a { margin-left: 0; }
+      .bubble.b1 { display: none; }
     }
   </style>
 </head>
 <body>
+  <div class="scene" aria-hidden="true">
+    <div class="lasers">
+      <div class="laser green l1"></div>
+      <div class="laser violet l2"></div>
+      <div class="laser cyan l3"></div>
+      <div class="laser violet l4"></div>
+    </div>
+    <div class="bubbles">
+      <div class="bubble b1"></div>
+      <div class="bubble b2"></div>
+      <div class="bubble b3"></div>
+      <div class="bubble b4"></div>
+      <div class="bubble b5"></div>
+    </div>
+  </div>
+
   <header class="site-header">
     <div class="shell">
       <a class="brand" href="#top" aria-label="138Labs Startseite">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>138Labs</span>
+        <img src="logo-transparent-360.png" alt="" />
+        <span class="brand-text">
+          <small>AI / Automation</small>
+        </span>
       </a>
       <nav class="site-nav" aria-label="Seitennavigation">
         <a href="#leistungen">Leistungen</a>
-        <a href="#themenfelder">Themenfelder</a>
-        <a href="#ablauf">Ablauf</a>
+        <a href="#felder">Themen</a>
+        <a href="#arbeitsweise">Arbeitsweise</a>
         <a href="#ueber">Über</a>
-        <a class="nav-cta" href="#kontakt">Kontakt</a>
+        <a href="#kontakt" class="nav-cta">Erstgespräch</a>
       </nav>
     </div>
   </header>
 
   <main id="top">
     <section class="hero">
-      <div class="shell hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">KI-Prototyping / Automatisierung / Wissensvermittlung</div>
-          <h1>KI verständlich machen. Ideen schnell testbar machen.</h1>
-          <p>
-            138 Labs unterstützt Unternehmen und Organisationen dabei, sinnvolle KI-Anwendungsfälle
-            zu erkennen, Potenziale greifbar zu machen und erste Lösungen praktisch zu erproben.
+      <div class="shell">
+        <div class="hero-content">
+          <div class="kicker">KI-Prototyping für reale Abläufe</div>
+          <h1>
+            <em>138Labs</em>
+            <span class="accent">macht KI testbar.</span>
+          </h1>
+          <p class="intro">
+            Für Organisationen mit einem klaren Blick auf konkrete Anwendungsfälle<br>
+            Klein genug zum Testen. Konkret genug für Entscheidungen.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#kontakt">Erstgespräch anfragen</a>
+            <a class="button button-primary" href="#kontakt">Anliegen einordnen <span class="arrow">→</span></a>
             <a class="button button-secondary" href="#leistungen">Leistungen ansehen</a>
           </div>
+          <div class="hero-meta">
+            <span>DSGVO-konform</span>
+            <span>Praxisorientiert</span>
+            <span>Aus Aachen</span>
+          </div>
         </div>
+        <div class="hero-logo-wrap" aria-hidden="true">
+          <img class="hero-logo" src="logo-transparent-980.png" alt="" width="980" height="445" />
+        </div>
+      </div>
+    </section>
 
-        <aside class="hero-panel" aria-label="Seitenlogik">
-          <div class="panel-label">Nutzerfluss</div>
-          <h2 class="panel-title">Der erste Draft priorisiert Orientierung vor Inszenierung.</h2>
-          <div class="flow-list">
-            <div class="flow-item">
-              <strong>1. Worum geht es hier?</strong>
-              <span>Direkte Einordnung über Positionierung statt nur Branding.</span>
-            </div>
-            <div class="flow-item">
-              <strong>2. Was wird angeboten?</strong>
-              <span>Drei klar trennbare Leistungsbereiche mit konkreter Erwartung.</span>
-            </div>
-            <div class="flow-item">
-              <strong>3. Wo könnte das für uns relevant sein?</strong>
-              <span>Themenfelder statt ausgedachter Referenzen oder zu breiter Cases.</span>
-            </div>
-            <div class="flow-item">
-              <strong>4. Wie läuft Zusammenarbeit ab?</strong>
-              <span>Kurzer Ablaufblock schafft Vertrauen und senkt Hürde zur Kontaktaufnahme.</span>
+    <section class="insight-strip reveal" aria-label="Anliegen und unsichere KI-Ideen">
+      <div class="shell">
+        <aside class="insight-card">
+          <div class="insight-side">
+            <span class="small-label">Startpunkt</span>
+            <strong>Unsichere KI-Ideen ?</strong>
+            <p class="intro">
+              Es gibt Interesse, aber noch keine belastbare Einschätzung, was technisch und organisatorisch sinnvoll ist?
+            </p>
+          </div>
+          <div class="insight-main">
+            <strong>Ein Anliegen reicht für den ersten Test.</strong>
+            <p class="intro">
+              Zum Beispiel ein Dokumenttyp, eine wiederkehrende Kundenfrage, ein Rechercheablauf
+              oder ein Prozess, bei dem Informationen heute noch manuell übertragen werden.
+            </p>
+            <div class="insight-path">
+              <span>Anliegen</span>
+              <span>Ausschnitt</span>
+              <span>Testbar</span>
+              <span>Entscheidung</span>
             </div>
           </div>
         </aside>
       </div>
     </section>
 
-    <section class="experience-strip" aria-label="Wirkung der Seite">
-      <div class="shell strip-grid">
-        <article class="strip-card">
-          <strong>Klarer Einstieg</strong>
-          <p>Besucher verstehen innerhalb weniger Sekunden, dass es um praxisnahe KI-Arbeit geht.</p>
-        </article>
-        <article class="strip-card">
-          <strong>Keine Buzzword-Wand</strong>
-          <p>Die Struktur erklärt Nutzen und Vorgehen, bevor einzelne Technologien in den Vordergrund rücken.</p>
-        </article>
-        <article class="strip-card">
-          <strong>Vertrauen ohne Cases</strong>
-          <p>Themenfelder und Arbeitsweise ersetzen übertriebene Behauptungen oder halbfertige Projektsignale.</p>
-        </article>
-        <article class="strip-card">
-          <strong>Klare Conversion</strong>
-          <p>Jede Sektion zahlt auf ein niedrigschwelliges Erstgespräch ein.</p>
-        </article>
-      </div>
-    </section>
-
     <section id="leistungen">
       <div class="shell">
-        <div class="section-head">
-          <div class="eyebrow">Leistungen</div>
-          <h2>Drei Einstiege, die unterschiedliche Reifegrade abholen.</h2>
-          <p>
-            Die Aufteilung soll nicht alles abdecken, sondern den Besucher an der richtigen Stelle abholen:
-            verstehen, analysieren oder prototypisch umsetzen.
-          </p>
+        <div class="section-head reveal">
+          <div class="kicker">Leistungen</div>
+          <div>
+            <h2><em>Drei Einstiege,</em><br />je nachdem wo ihr steht.</h2><br>
+            <p class="intro">
+              Manche haben schon eine Idee und brauchen einen ersten, testbaren Stand.<br> Manche Teams brauchen Orientierung.<br> Andere wollen einen Prozess prüfen.
+            </p>
+          </div>
         </div>
 
         <div class="services-grid">
-          <article class="service-card">
-            <div class="card-index">01</div>
+          <article class="service-card reveal">
+            <span class="number">01 / Workshops</span>
             <h3>KI-Workshops</h3>
-            <p>Ein strukturierter Einstieg für Teams, die generative KI und neue Arbeitsweisen besser einordnen wollen.</p>
-            <div class="service-points">
-              <span>Grundlagen und Chancen verständlich machen</span>
-              <span>Berührungsängste abbauen</span>
-              <span>reale Einsatzfelder gemeinsam herausarbeiten</span>
-            </div>
+            <p>Für Teams, die generative KI verstehen und auf die eigene Arbeit übertragen wollen.</p>
+            <ul>
+              <li>Was ChatGPT, Copilot und Agenten leisten können</li>
+              <li>Wo Grenzen, Datenschutzfragen und Fehlannahmen liegen</li>
+              <li>Welche Anwendungsfälle im eigenen Alltag sinnvoll wirken</li>
+            </ul>
           </article>
 
-          <article class="service-card">
-            <div class="card-index">02</div>
-            <h3>Automatisierungsanalysen</h3>
-            <p>Prozesse, Informationsflüsse und repetitive Arbeitsschritte darauf prüfen, wo KI oder Automatisierung realen Nutzen bringt.</p>
-            <div class="service-points">
-              <span>interne Abläufe sichtbar machen</span>
-              <span>Potenziale priorisieren</span>
-              <span>machbare nächste Schritte ableiten</span>
-            </div>
+          <article class="service-card reveal">
+            <span class="number">02 / Analyse</span>
+            <h3>Automatisierungsanalyse</h3>
+            <p>Für Abläufe, bei denen wiederholt Informationen gesucht, geprüft oder übertragen werden.</p>
+            <ul>
+              <li>Dokumente, E-Mails, Tabellen und Tools betrachten</li>
+              <li>Zeitfresser und Medienbrüche sichtbar machen</li>
+              <li>Nutzen, Aufwand und Risiken priorisieren</li>
+            </ul>
           </article>
 
-          <article class="service-card">
-            <div class="card-index">03</div>
+          <article class="service-card reveal">
+            <span class="number">03 / Prototyp</span>
             <h3>KI-Prototyping</h3>
-            <p>Ideen schnell in testbare Formen bringen, bevor größere Budgets, Systeme oder Organisationsänderungen nötig werden.</p>
-            <div class="service-points">
-              <span>erste Assistenten oder Workflows bauen</span>
-              <span>Hypothesen praktisch validieren</span>
-              <span>von Konzept zu greifbarem Artefakt kommen</span>
-            </div>
+            <p>Für Ideen, die klein und sauber getestet werden sollen.</p>
+            <ul>
+              <li>Assistenten, Suchsysteme oder Workflows skizzieren</li>
+              <li>Mit echten Beispieldaten ausprobieren</li>
+              <li>Entscheiden, ob sich weitere Umsetzung lohnt</li>
+            </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="themes" id="themenfelder">
+    <section id="felder">
       <div class="shell">
-        <div class="section-head">
-          <div class="eyebrow">Themenfelder</div>
-          <h2>Statt fertige Cases zu behaupten, lieber Arbeitsfelder präzise benennen.</h2>
-          <p>
-            Dieser Block soll Besuchern das Gefühl geben: <em>Hier könnte unser Thema dazugehören.</em>
-            Er dient primär der Selbstzuordnung und erst sekundär der technischen Tiefe.
-          </p>
+        <div class="section-head reveal">
+          <div class="kicker">Themenfelder</div>
+          <div>
+            <h2><em>Dokumente, Wissen,</em><br />Assistenten und Abläufe.</h2><br>
+            <p class="intro">
+              138Labs unterstützt dort, wo Informationen gesucht, geprüft, zusammengefasst,
+              weitergegeben oder in Entscheidungen übersetzt werden müssen.
+            </p>
+          </div>
         </div>
 
-        <div class="themes-grid">
-          <article class="theme-card">
-            <h3>Dokumentenverarbeitung</h3>
-            <p>Informationen aus PDFs, Formularen, E-Mails oder Akten strukturieren, auswerten und weiterverwenden.</p>
-            <div class="theme-points">
-              <span>Dokumentenanalyse</span>
-              <span>Strukturierung von Inhalten</span>
-              <span>Vorbereitung für Folgeprozesse</span>
+        <div class="fields-grid reveal">
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 01</span>
+                <h3>Dokumentenverarbeitung</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>PDFs, Formulare, Akten oder E-Mails auswerten und für den nächsten Arbeitsschritt vorbereiten.</p>
+              <ul>
+                <li>Unterlagen zusammenfassen</li>
+                <li>Felder und Aussagen extrahieren</li>
+                <li>Prüf- und Antwortprozesse vorbereiten</li>
+              </ul>
             </div>
-          </article>
+          </details>
 
-          <article class="theme-card">
-            <h3>Wissensmanagement</h3>
-            <p>Verstreutes Wissen auffindbar machen und für Teams oder Organisationen besser nutzbar organisieren.</p>
-            <div class="theme-points">
-              <span>interne Wissenssysteme</span>
-              <span>Rechercheunterstützung</span>
-              <span>Antwortsysteme für wiederkehrende Fragen</span>
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 02</span>
+                <h3>Wissensmanagement</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>Vorhandenes Wissen auffindbar machen, ohne dass Mitarbeitende lange suchen müssen.</p>
+              <ul>
+                <li>Interne Dokumente durchsuchbar machen</li>
+                <li>Antworten aus vorhandenen Quellen ableiten</li>
+                <li>Wiederkehrende Fragen schneller klären</li>
+              </ul>
             </div>
-          </article>
+          </details>
 
-          <article class="theme-card">
-            <h3>KI-Assistenten</h3>
-            <p>Assistenten für interne Abläufe oder externe Kommunikation konzipieren und in erste nutzbare Formen bringen.</p>
-            <div class="theme-points">
-              <span>interne Entlastung</span>
-              <span>kontextbezogene Antworten</span>
-              <span>testbare Assistenten statt Folienkonzepte</span>
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 03</span>
+                <h3>KI-Assistenten</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>Assistenten für interne Abläufe, Kundenkommunikation oder Recherche mit klaren Grenzen testen.</p>
+              <ul>
+                <li>Antworten und Entwürfe vorbereiten</li>
+                <li>Quellen und Regeln sichtbar halten</li>
+                <li>Mit Beispielanfragen prüfen</li>
+              </ul>
             </div>
-          </article>
+          </details>
 
-          <article class="theme-card">
-            <h3>Prozessautomatisierung und Agentensysteme</h3>
-            <p>Wiederkehrende Aufgaben und komplexere Abläufe schrittweise automatisieren, ohne sofort eine große Plattform zu bauen.</p>
-            <div class="theme-points">
-              <span>Informationsflüsse verbinden</span>
-              <span>manuelle Übergaben reduzieren</span>
-              <span>komplexere Abläufe testweise orchestrieren</span>
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 04</span>
+                <h3>Prozessautomatisierung</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>Mails, Tabellen, Tools und manuelle Übergaben schrittweise verbinden.</p>
+              <ul>
+                <li>Kopierarbeit reduzieren</li>
+                <li>Informationen automatisch vorbereiten</li>
+                <li>Mehrstufige Abläufe im kleinen Rahmen testen</li>
+              </ul>
             </div>
-          </article>
+          </details>
         </div>
       </div>
     </section>
 
-    <section id="ablauf">
+    <section class="process" id="arbeitsweise">
       <div class="shell">
-        <div class="section-head">
-          <div class="eyebrow">Ablauf</div>
-          <h2>Der Zusammenarbeitspfad muss auf der Seite sichtbar sein.</h2>
-          <p>
-            Nutzer wollen nicht nur wissen, <em>was</em> angeboten wird, sondern auch, wie sich ein Erstkontakt
-            in einen überschaubaren nächsten Schritt übersetzt.
-          </p>
+        <div class="section-head reveal">
+          <div class="kicker">Arbeitsweise</div>
+          <div>
+            <h2><em>Klein genug zum Testen.</em><br />Konkret genug für Entscheidungen.</h2><br>
+            <p class="intro">
+              Der Einstieg klärt schnell, ob ein Thema Substanz hat.<br>
+              Gute Prototypen beantworten nicht alles -<br>
+              aber sie machen Gefühle greifbar.
+            </p>
+          </div>
         </div>
 
         <div class="process-grid">
-          <div class="process-steps">
-            <article class="step">
-              <div class="step-number">01</div>
-              <div>
-                <strong>Einordnen</strong>
-                <p>Im ersten Gespräch wird nicht sofort verkauft, sondern sortiert: Thema, Kontext, Reifegrad und mögliche Hebel.</p>
-              </div>
-            </article>
-            <article class="step">
-              <div class="step-number">02</div>
-              <div>
-                <strong>Potenziale konkretisieren</strong>
-                <p>Aus Ideen oder diffusem Interesse werden greifbare Anwendungsfälle, Prioritäten und realistische Optionen.</p>
-              </div>
-            </article>
-            <article class="step">
-              <div class="step-number">03</div>
-              <div>
-                <strong>Schnell testen</strong>
-                <p>Wenn sinnvoll, wird nicht lange abstrahiert, sondern prototypisch gearbeitet, damit Entscheidungen auf etwas Konkretem beruhen.</p>
-              </div>
-            </article>
-          </div>
-
-          <aside class="contact-card">
-            <h3>Warum dieser Block wichtig ist</h3>
-            <p>
-              Für die User Experience ist das hier zentral: Die Seite darf nicht wie ein loses Leistungsmenü wirken.
-              Der Ablauf gibt dem Besucher eine mentale Brücke vom Interesse zum Erstgespräch.
-            </p>
-            <div class="metric-list" style="margin-top: 18px;">
-              <div class="metric-item">
-                <strong>Niedrige Hürde</strong>
-                <span>Erstkontakt wirkt wie Orientierung, nicht wie ein Commitment zu einem großen Projekt.</span>
-              </div>
-              <div class="metric-item">
-                <strong>Glaubwürdigkeit</strong>
-                <span>Der Fokus liegt auf Testbarkeit und Nutzen statt auf maximalen Versprechen.</span>
-              </div>
-              <div class="metric-item">
-                <strong>Passung</strong>
-                <span>Teams ohne eigene KI-Erfahrung können sich trotzdem angesprochen fühlen.</span>
-              </div>
-            </div>
-          </aside>
+          <article class="step reveal">
+            <span class="step-number">01</span>
+            <h3>Einordnen</h3>
+            <p>Du bringst ein Anliegen mit — eingehende Dokumente, interne Recherche, wiederkehrende Anfragen. Wir schauen auf Material, Beteiligte, Datenwege und den heutigen Ablauf.</p>
+          </article>
+          <article class="step reveal">
+            <span class="step-number">02</span>
+            <h3>Begrenzen</h3>
+            <p>Aus dem großen Thema wird ein kleiner Testfall: ein Dokumenttyp, zehn Beispielanfragen, ein wiederkehrender Schritt oder ein klarer Ausschnitt aus einem Prozess.</p>
+          </article>
+          <article class="step reveal">
+            <span class="step-number">03</span>
+            <h3>Testen</h3>
+            <p>Der Ausschnitt wird praktisch geprüft — als Workshop, Automatisierungsanalyse oder Prototyp, der mit echten Beispielen zeigt, was funktioniert und was nicht.</p>
+          </article>
         </div>
+      </div>
+    </section>
+
+    <section class="trust-band" aria-label="Datenschutz und realistische Umsetzung">
+      <div class="shell">
+        <div>
+          <div class="kicker" style="margin-bottom: 12px;">Vertrauen</div>
+          <h2>DSGVO-konform von Anfang an.</h2>
+        </div>
+        <p class="intro">
+          Datenschutz, Datenwege und nachvollziehbare Ergebnisse werden früh mitgedacht:<br>
+          Welche Daten dürfen genutzt werden? Wo werden sie verarbeitet? Was muss belegbar bleiben?<br>
+          So entstehen KI-Tests, die praktisch nutzbar und sauber eingeordnet sind.
+        </p>
       </div>
     </section>
 
     <section id="ueber">
       <div class="shell">
-        <div class="section-head">
-          <div class="eyebrow">Über 138 Labs</div>
-          <h2>Marke zuerst, Person sichtbar, aber nicht überdominant.</h2>
-          <p>
-            Dieser Bereich soll Vertrauen aufbauen, ohne die gesamte Seite in ein persönliches Portfolio kippen zu lassen.
-            Die Marke bleibt das Primäre, der Hintergrund liefert Kontext.
-          </p>
+        <div class="section-head reveal">
+          <div class="kicker">Über 138Labs</div>
+          <div>
+            <h2><em>Pragmatisch,</em> technisch, realisiert.</h2><br>
+            <p class="intro">
+              138Labs steht für praxisnahe KI-Arbeit:<br>
+              neue Systeme verstehen,<br>
+              reale Abläufe ansehen,<br>
+              schnell zu einem überprüfbaren Stand kommen.
+            </p>
+          </div>
         </div>
 
         <div class="about-grid">
-          <article class="about-card">
-            <h3>Wofür 138 Labs steht</h3>
-            <p>
-              Praxisnahe KI-Arbeit, verständliche Kommunikation, Interesse an digitalen Prozessen und ein klarer Fokus
-              auf reale Nutzbarkeit statt reiner Technologie-Inszenierung.
-            </p>
+          <article class="about-card featured reveal">
+            <h3>Wofür 138Labs steht</h3>
+            <ul>
+              <li>Technisches Verständnis</li>
+              <li>Schnelle Prototypen statt monatelanger Konzepte</li>
+              <li>Verständliche Kommunikation</li>
+              <li>Fokus auf realen Nutzen</li>
+            </ul>
+            <br />
+            <p>Ziel ist ein belastbarer erster Schritt!</p>
           </article>
-          <article class="about-card">
-            <h3>Persönlicher Kontext</h3>
-            <p>
-              <em>Gegründet von Robert Hormann, Student für Digital Innovation &amp; Business.</em>
-              Der Hintergrund kann Vertrauen schaffen, sollte aber als ruhiger Kontextblock erscheinen und nicht das gesamte Framing dominieren.
-            </p>
+          <article class="about-card about-founder reveal">
+            <div class="about-founder-copy">
+              <h3>Wer hinter 138Labs steht</h3>
+              <p>
+                Der fachliche Hintergrund liegt in digitalen Geschäftsmodellen, Automatisierung
+                und der praktischen Anwendung neuer Technologien.
+              </p>
+              <div class="founder">
+                <div class="founder-text">
+                  <strong>Robert Hormann</strong>
+                  <span>Digital Innovation &amp; Business · FH Aachen</span>
+                </div>
+              </div>
+            </div>
+            <div class="founder-mark" aria-hidden="true"></div>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="kontakt">
+    <section class="contact" id="kontakt">
       <div class="shell">
-        <div class="section-head">
-          <div class="eyebrow">Kontakt</div>
-          <h2>Die Seite sollte mit einem einfachen nächsten Schritt enden.</h2>
-          <p>
-            Kein harter Funnel, keine aggressive Sales-Rhetorik. Ziel ist ein klarer, professioneller und niedrigschwelliger Abschluss.
-          </p>
+        <div class="section-head reveal">
+          <div class="kicker">Kontakt</div>
+          <div>
+            <h2><em>Eine konkrete Beobachtung</em> reicht.</h2><br>
+            <p class="intro">
+              "Wir haben eine Idee für einen Agenten,
+              wissen aber nicht, ob sie realistisch ist."<br>
+              "Wir prüfen viele Dokumente manuell."<br>
+              "Unser Team will KI besser verstehen."
+            </p>
+          </div>
         </div>
 
         <div class="contact-grid">
-          <article class="contact-card">
+          <article class="contact-card primary reveal">
             <h3>Erstgespräch</h3>
-            <p>Wenn du ein Thema einordnen oder eine Idee testbar machen willst, ist ein kurzes Erstgespräch der richtige Einstieg.</p>
-            <div class="contact-actions">
-              <a class="button button-primary" href="mailto:robert@138labs.de">robert@138labs.de</a>
-              <a class="button button-secondary" href="https://de.linkedin.com/in/robert-hormann-76a15621b" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <p>Kurze Nachricht mit Kontext genügt:<br /> Was kostet Zeit, wo liegen Informationen, welche Idee soll greifbarer werden?</p>
+            <div class="contact-socials" aria-label="Schnellkontakt">
+              <a href="mailto:robert@138labs.de" aria-label="Mail an robert@138labs.de">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25v13.5A2.25 2.25 0 0 1 18.75 21H5.25A2.25 2.25 0 0 1 3 18.75V5.25Zm2.25-.75a.75.75 0 0 0-.75.75v.42l7.5 4.69 7.5-4.69v-.42a.75.75 0 0 0-.75-.75H5.25Zm14.25 2.94-7.1 4.44a.75.75 0 0 1-.8 0L4.5 7.44v11.31c0 .41.34.75.75.75h13.5c.41 0 .75-.34.75-.75V7.44Z" />
+                </svg>
+                Mail
+              </a>
+              <a href="https://de.linkedin.com/in/robert-hormann-76a15621b" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profil">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20.45 20.45h-3.56v-5.58c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.67H9.34V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.28ZM5.32 7.41a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.04H3.54V8.98H7.1v11.47ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z" />
+                </svg>
+                LinkedIn
+              </a>
+              <a href="https://github.com/kanzleramt138" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profil">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 .5C5.73.5.75 5.6.75 11.86c0 5.02 3.24 9.28 7.73 10.78.56.1.77-.24.77-.54v-2.1c-3.14.68-3.8-1.34-3.8-1.34-.52-1.32-1.26-1.67-1.26-1.67-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.18 1.74 1.18 1.02 1.74 2.67 1.24 3.32.95.1-.74.4-1.24.72-1.53-2.51-.29-5.15-1.26-5.15-5.59 0-1.24.44-2.24 1.17-3.03-.12-.29-.51-1.44.11-2.99 0 0 .96-.31 3.12 1.16a10.8 10.8 0 0 1 5.68 0c2.16-1.47 3.12-1.16 3.12-1.16.62 1.55.23 2.7.11 2.99.73.79 1.17 1.79 1.17 3.03 0 4.34-2.65 5.3-5.17 5.58.41.36.77 1.05.77 2.12v3.12c0 .3.2.65.78.54a11.37 11.37 0 0 0 7.72-10.78C23.25 5.6 18.27.5 12 .5Z" />
+                </svg>
+                GitHub
+              </a>
             </div>
           </article>
-
-          <article class="contact-card">
-            <h3>Was dieser Draft testet</h3>
-            <p>
-              Noch nicht das finale Design, sondern die Frage, ob sich die Reihenfolge der Informationen richtig anfühlt:
-              Einstieg, Leistungsverständnis, Selbstzuordnung, Arbeitsweise, Kontakt.
-            </p>
+          <article class="contact-card reveal">
+            <h3>Guter Startpunkt</h3>
+            <p>Es muss nichts ausformuliert sein. Hilfreich für das erste Gespräch:</p>
+            <ul class="contact-list">
+              <li>Ein Beispielprozess oder Dokumenttyp</li>
+              <li>Eine wiederkehrende Frage aus dem Alltag</li>
+              <li>Eine grobe KI-Idee, die geprüft werden soll</li>
+              <li>Ein Team, das sich orientieren möchte</li>
+            </ul>
           </article>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="legal">
+  <footer class="site-footer">
     <div class="shell">
-      <span>138Labs</span>
-      <a href="impressum.html">Impressum</a>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="#top" style="color: var(--ink);">
+            <img src="logo-transparent-360.png" alt="" />
+            <span class="brand-text"><small>AI / Automation</small></span>
+          </a>
+          <p>KI-Prototypen, Automatisierungen und Workshops für Organisationen mit konkreten Anwendungsfällen.</p>
+        </div>
+        <div>
+          <h4>Leistungen</h4>
+          <ul>
+            <li><a href="#leistungen">KI-Workshops</a></li>
+            <li><a href="#leistungen">Automatisierungsanalyse</a></li>
+            <li><a href="#leistungen">KI-Prototyping</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Themen</h4>
+          <ul>
+            <li><a href="#felder">Dokumente</a></li>
+            <li><a href="#felder">Wissen</a></li>
+            <li><a href="#felder">Assistenten</a></li>
+            <li><a href="#felder">Prozesse</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Kontakt</h4>
+          <ul>
+            <li><a href="mailto:robert@138labs.de">robert@138labs.de</a></li>
+            <li><a href="https://de.linkedin.com/in/robert-hormann-76a15621b" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <span>© <span id="year">2026</span> 138Labs · Robert Hormann · Aachen</span>
+        <div>
+          <a href="impressum.html">Impressum</a>
+          <a href="impressum.html#datenschutz">Datenschutz</a>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <script>
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Reveal on scroll
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var els = document.querySelectorAll(".reveal");
+      if (reduce || !("IntersectionObserver" in window)) {
+        els.forEach(function (el) { el.classList.add("is-visible"); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+
+    // Keep field overlays readable by allowing one open card at a time.
+    (function () {
+      var fieldCards = document.querySelectorAll(".field-card");
+      fieldCards.forEach(function (card) {
+        card.addEventListener("toggle", function () {
+          if (!card.open) return;
+          fieldCards.forEach(function (other) {
+            if (other !== card) other.open = false;
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
