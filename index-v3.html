@@ -1,0 +1,1751 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>138Labs — KI testbar machen</title>
+  <meta
+    name="description"
+    content="138 Labs entwickelt KI-Prototypen, Automatisierungen und Workshops für Organisationen, die konkrete KI-Anwendungsfälle testen wollen."
+  />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="assets/fonts/fonts.css" />
+  <style>
+    :root {
+      --ink: #f4f7fb;
+      --ink-soft: #c8cedb;
+      --muted: #8d94a6;
+      --paper: #ede4d1;
+      --paper-soft: #d9ccb5;
+      --charcoal: #05060d;
+      --charcoal-2: #0a0c16;
+      --charcoal-3: #11141f;
+      --green: #42e59b;
+      --green-glow: rgba(66, 229, 155, 0.22);
+      --violet: #7c4dff;
+      --violet-glow: rgba(124, 77, 255, 0.26);
+      --red: #f05d4f;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.14);
+      --max: 1200px;
+      --serif: "Fraunces", Georgia, "Times New Roman", ui-serif, serif;
+      --sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--charcoal);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    /* ===========================================================
+       Cinematic background: spectral lasers + drifting bubbles
+       =========================================================== */
+    .scene {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 12% 8%, rgba(66, 229, 155, 0.10), transparent 60%),
+        radial-gradient(ellipse 70% 55% at 90% 18%, rgba(124, 77, 255, 0.13), transparent 60%),
+        radial-gradient(ellipse 100% 70% at 50% 110%, rgba(124, 77, 255, 0.06), transparent 60%),
+        linear-gradient(180deg, #05060d 0%, #06080f 40%, #07091a 100%);
+    }
+
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 35%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 35%, transparent 70%);
+      opacity: 0.28;
+    }
+
+    /* Soft veil — dims bubbles & lasers behind content for readability */
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(5, 6, 13, 0.35), transparent 70%),
+        linear-gradient(180deg, rgba(5, 6, 13, 0.25) 0%, transparent 30%, transparent 70%, rgba(5, 6, 13, 0.4) 100%);
+      pointer-events: none;
+    }
+
+    .lasers {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .laser {
+      position: absolute;
+      left: -10%;
+      width: 120%;
+      height: 1px;
+      transform-origin: 50% 50%;
+      opacity: 0.3;
+      animation: laser-shimmer 11s ease-in-out infinite;
+      filter: drop-shadow(0 0 4px currentColor);
+    }
+
+    .laser.green { color: var(--green); }
+    .laser.violet { color: var(--violet); }
+    .laser.cyan { color: #4dd6ff; }
+
+    .laser::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, currentColor 32%, currentColor 68%, transparent 100%);
+    }
+
+    .laser.l1 { top: 22%; transform: rotate(-8deg); animation-delay: 0s; opacity: 0.32; }
+    .laser.l2 { top: 38%; transform: rotate(12deg); animation-delay: -2.4s; opacity: 0.22; }
+    .laser.l3 { top: 60%; transform: rotate(-5deg); animation-delay: -4.8s; opacity: 0.26; }
+    .laser.l4 { top: 78%; transform: rotate(9deg); animation-delay: -1.2s; opacity: 0.2; }
+
+    @keyframes laser-shimmer {
+      0%, 100% { transform: rotate(var(--r, -8deg)) translateX(0); opacity: 0.18; }
+      50%      { opacity: 0.4; }
+    }
+
+    .bubbles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.10), transparent 40%),
+        radial-gradient(circle at 70% 75%, rgba(66, 229, 155, 0.10), transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(124, 77, 255, 0.06), transparent 65%);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow:
+        inset 0 0 24px rgba(255, 255, 255, 0.04),
+        0 0 30px rgba(124, 77, 255, 0.07);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      filter: blur(0.5px);
+      animation: drift 26s ease-in-out infinite;
+      opacity: 0.35;
+    }
+
+    .bubble.b1 { width: 220px; height: 220px; top: 14%; left: 72%; animation-delay: 0s; opacity: 0.3; }
+    .bubble.b2 { width: 120px; height: 120px; top: 30%; left: 6%;  animation-delay: -6s; opacity: 0.28; }
+    .bubble.b3 { width: 70px;  height: 70px;  top: 64%; left: 88%; animation-delay: -11s; opacity: 0.25; }
+    .bubble.b4 { width: 40px;  height: 40px;  top: 78%; left: 22%; animation-delay: -15s; opacity: 0.3; }
+    .bubble.b5 { width: 28px;  height: 28px;  top: 18%; left: 42%; animation-delay: -3s; opacity: 0.3; }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(18px, -22px) scale(1.04); }
+      66%      { transform: translate(-12px, 14px) scale(0.98); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .laser, .bubble, .hero-logo-wrap, .hero-logo-wrap::before, .hero-logo-wrap::after { animation: none !important; }
+    }
+
+    /* ===========================================================
+       Layout primitives
+       =========================================================== */
+    a { color: inherit; }
+
+    .shell {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    main, header, footer { position: relative; z-index: 1; }
+
+    section {
+      padding: 112px 0;
+      position: relative;
+    }
+
+    section + section {
+      border-top: 1px solid var(--line);
+    }
+
+    h1, h2, h3, h4, p { margin-top: 0; }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      border-radius: 999px;
+    }
+
+    /* ===========================================================
+       Site header
+       =========================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(5, 6, 13, 0.62);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-header .shell {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .brand img {
+      width: 82px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(124, 77, 255, 0.35));
+    }
+
+    .brand .brand-text {
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .site-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .site-nav a {
+      color: var(--ink-soft);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+
+    .site-nav a:hover,
+    .site-nav a:focus-visible {
+      color: var(--ink);
+      outline: none;
+    }
+
+    .nav-cta {
+      color: var(--charcoal) !important;
+      background: var(--green);
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-weight: 700;
+      transition: box-shadow 200ms ease, transform 200ms ease;
+    }
+
+    .nav-cta:hover,
+    .nav-cta:focus-visible {
+      box-shadow: 0 0 0 4px rgba(66, 229, 155, 0.18), 0 0 24px rgba(66, 229, 155, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* ===========================================================
+       Hero
+       =========================================================== */
+    .hero {
+      min-height: min(820px, calc(100svh - 72px));
+      padding: clamp(36px, 7svh, 56px) 0 clamp(56px, 10svh, 82px);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero .shell {
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 60ch;
+    }
+
+    .hero-logo-wrap {
+      width: min(100%, clamp(360px, 42vw, 520px));
+      margin: 0 -32px 0 auto;
+      justify-self: end;
+      position: relative;
+    }
+
+    .hero-logo-wrap::before,
+    .hero-logo-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("logo-glow-green.png") center / contain no-repeat;
+      filter: blur(14px);
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: -1;
+      animation: logo-aura 9s ease-in-out infinite;
+    }
+
+    .hero-logo-wrap::after {
+      background-image: url("logo-glow-violet.png");
+      animation-direction: reverse;
+    }
+
+    .hero-logo {
+      display: block;
+      width: 100%;
+      height: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      max-width: 16ch;
+      margin-bottom: 24px;
+      margin-top: 18px;
+      font-family: var(--serif);
+      font-size: clamp(42px, 5.6vw, 72px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 24px rgba(5, 6, 13, 0.55);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 400;
+    }
+
+    .hero h1 .accent {
+      display: block;
+      background: linear-gradient(92deg, var(--green) 0%, #9df8cb 35%, var(--violet) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 500;
+      font-family: var(--sans);
+      letter-spacing: -0.025em;
+    }
+
+    .hero p.lead {
+      max-width: 56ch;
+      color: var(--ink-soft);
+      font-size: clamp(17px, 1.4vw, 19px);
+      line-height: 1.6;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-top: clamp(24px, 5svh, 40px);
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-meta span::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* ===========================================================
+       Buttons
+       =========================================================== */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 12px 22px;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: border-color 180ms ease, box-shadow 200ms ease, color 180ms ease, background 180ms ease, transform 200ms ease;
+    }
+
+    .button .arrow {
+      display: inline-block;
+      transition: transform 200ms ease;
+    }
+
+    .button:hover .arrow,
+    .button:focus-visible .arrow { transform: translateX(3px); }
+
+    .button:hover,
+    .button:focus-visible {
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .button-primary {
+      border-color: transparent;
+      background: var(--green);
+      color: var(--charcoal);
+    }
+
+    .button-primary:hover,
+    .button-primary:focus-visible {
+      box-shadow:
+        0 0 0 1px rgba(66, 229, 155, 0.25),
+        0 8px 32px rgba(66, 229, 155, 0.35);
+    }
+
+    .button-secondary {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .button-secondary:hover,
+    .button-secondary:focus-visible {
+      border-color: rgba(124, 77, 255, 0.6);
+      background: rgba(124, 77, 255, 0.08);
+      box-shadow: 0 0 0 1px rgba(124, 77, 255, 0.18), 0 8px 28px rgba(124, 77, 255, 0.22);
+    }
+
+    /* ===========================================================
+       Insight strip (between hero & services)
+       =========================================================== */
+    .insight-strip {
+      padding: 48px 0 88px;
+    }
+
+    .insight-card {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1.45fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(13, 16, 26, 0.6);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+    }
+
+    .insight-side,
+    .insight-main {
+      padding: 32px;
+    }
+
+    .insight-side {
+      background: linear-gradient(170deg, rgba(66, 229, 155, 0.10), rgba(66, 229, 155, 0.02));
+      border-right: 1px solid var(--line);
+    }
+
+    .insight-side .small-label {
+      display: block;
+      margin-bottom: 32px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .insight-side strong,
+    .insight-main strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .insight-side p,
+    .insight-main p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    .insight-path {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .insight-path span {
+      border: 1px solid rgba(66, 229, 155, 0.28);
+      background: rgba(66, 229, 155, 0.06);
+      color: #dff6e9;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ===========================================================
+       Section heads
+       =========================================================== */
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.35fr 0.65fr;
+      gap: 36px;
+      align-items: end;
+      margin-bottom: 56px;
+    }
+
+    .section-head h2 {
+      max-width: 18ch;
+      margin-bottom: 0;
+      font-family: var(--serif);
+      font-size: clamp(36px, 5.2vw, 64px);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 20px rgba(5, 6, 13, 0.5);
+    }
+
+    .section-head h2 em {
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.74);
+      font-weight: 400;
+    }
+
+    .section-head p {
+      margin-bottom: 4px;
+      color: var(--ink-soft);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    /* ===========================================================
+       Services
+       =========================================================== */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .service-card {
+      position: relative;
+      min-height: 420px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(20, 24, 38, 0.7), rgba(11, 14, 24, 0.7));
+      backdrop-filter: blur(6px);
+      transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(124, 77, 255, 0.20), transparent 55%);
+      opacity: 0;
+      transition: opacity 280ms ease;
+      pointer-events: none;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(124, 77, 255, 0.45);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 77, 255, 0.2);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-card > * { position: relative; }
+
+    .service-card .number {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 56px;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+    }
+
+    .service-card .number::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(66, 229, 155, 0.5), transparent);
+      min-width: 60px;
+    }
+
+    .service-card h3,
+    .field-card h3,
+    .about-card h3,
+    .contact-card h3 {
+      margin-bottom: 14px;
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    .service-card > p,
+    .field-card > p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    .service-card ul,
+    .field-card ul,
+    .about-card ul {
+      display: grid;
+      gap: 10px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .service-card li,
+    .field-card li,
+    .about-card li {
+      position: relative;
+      padding-left: 22px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .service-card li::before,
+    .field-card li::before,
+    .about-card li::before {
+      content: "";
+      position: absolute;
+      top: 0.62em;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    /* ===========================================================
+       Thread / Fields
+       =========================================================== */
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: start;
+      width: min(100%, 600px);
+      margin: 0 auto;
+    }
+
+    .field-card {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(11, 14, 24, 0.85);
+      backdrop-filter: blur(6px);
+      transform-origin: 50% 50%;
+      will-change: transform, box-shadow;
+      transition:
+        transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 380ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 280ms ease,
+        background 280ms ease,
+        opacity 320ms ease;
+    }
+
+    .field-card:not([open]):hover {
+      transform: translateY(-3px);
+      border-color: rgba(66, 229, 155, 0.28);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.42);
+    }
+
+    .field-card[open] {
+      z-index: 20;
+      background: rgba(22, 26, 42, 0.95);
+      border-color: rgba(124, 77, 255, 0.5);
+      border-radius: 22px;
+      transform: translateY(-4px);
+      box-shadow:
+        0 32px 70px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(124, 77, 255, 0.25),
+        0 0 60px rgba(124, 77, 255, 0.22);
+    }
+
+    /* Push neighbours back when one card is open */
+    .fields-grid:has(.field-card[open]) .field-card:not([open]) {
+      opacity: 0.5;
+      transform: scale(0.99);
+      filter: saturate(0.85);
+    }
+
+    .field-card summary {
+      position: relative;
+      z-index: 3;
+      cursor: pointer;
+      list-style: none;
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      transition: background 200ms ease;
+      user-select: none;
+      border-radius: inherit;
+    }
+
+    .field-card[open] summary {
+      background:
+        linear-gradient(135deg, rgba(124, 77, 255, 0.1), transparent 62%),
+        rgba(255, 255, 255, 0.018);
+      border-radius: 22px 22px 14px 14px;
+    }
+
+    .field-card summary::-webkit-details-marker { display: none; }
+    .field-card summary::marker { content: ""; }
+
+    .field-card:not([open]) summary:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .field-card summary:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px rgba(66, 229, 155, 0.4);
+    }
+
+    .field-card .field-num {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--violet);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .field-card summary h3 {
+      margin: 0;
+    }
+
+    .field-toggle {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1;
+      color: var(--green);
+      background: rgba(66, 229, 155, 0.06);
+      transition:
+        transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        background 280ms ease,
+        border-color 280ms ease,
+        color 280ms ease,
+        box-shadow 280ms ease;
+    }
+
+    .field-card:hover .field-toggle {
+      background: rgba(66, 229, 155, 0.18);
+      border-color: var(--green);
+      color: var(--green);
+      box-shadow: 0 0 16px var(--green-glow);
+    }
+
+    .field-card[open] .field-toggle {
+      transform: rotate(45deg);
+      background: rgba(124, 77, 255, 0.16);
+      border-color: var(--violet);
+      color: var(--violet);
+      box-shadow: 0 0 16px var(--violet-glow);
+    }
+
+    .field-body {
+      position: relative;
+      margin: 14px 22px 22px;
+      padding: 32px 30px 30px;
+      border: 1px solid rgba(124, 77, 255, 0.5);
+      border-radius: 34px 34px 30px 30px;
+      background:
+        linear-gradient(180deg, rgba(22, 26, 42, 0.95), rgba(13, 17, 29, 0.98) 42px),
+        linear-gradient(155deg, rgba(124, 77, 255, 0.14), rgba(66, 229, 155, 0.06) 52%, transparent 100%),
+        rgba(13, 17, 29, 0.98);
+      box-shadow:
+        0 28px 62px rgba(0, 0, 0, 0.5),
+        0 0 42px rgba(124, 77, 255, 0.16);
+      backdrop-filter: blur(10px);
+      animation: field-expand 360ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform-origin: top center;
+    }
+
+    .field-body p {
+      margin: 0 0 14px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    .field-body ul {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .field-body li {
+      position: relative;
+      padding-left: 22px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
+    .field-body li::before {
+      content: "";
+      position: absolute;
+      top: 0.62em;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green-glow);
+    }
+
+    @keyframes field-expand {
+      0%   { opacity: 0; transform: translateY(-14px) scale(0.96); }
+      55%  { opacity: 1; }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ===========================================================
+       Process
+       =========================================================== */
+    .process {
+      background:
+        linear-gradient(180deg, rgba(124, 77, 255, 0.06), transparent 35%),
+        rgba(7, 9, 17, 0.6);
+      backdrop-filter: blur(6px);
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      position: relative;
+    }
+
+    .process-grid::before {
+      content: "";
+      position: absolute;
+      top: 38px;
+      left: 5%;
+      right: 5%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--violet), var(--green), transparent);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .step {
+      position: relative;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(13, 16, 26, 0.75);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 24px;
+      border-radius: 12px;
+      background: rgba(124, 77, 255, 0.12);
+      border: 1px solid rgba(124, 77, 255, 0.35);
+      color: var(--violet);
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 0 18px rgba(124, 77, 255, 0.18);
+    }
+
+    .step h3 {
+      margin-bottom: 12px;
+      font-family: var(--serif);
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ===========================================================
+       Trust band
+       =========================================================== */
+    .trust-band {
+      padding: 64px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(120deg, rgba(66, 229, 155, 0.10), transparent 70%),
+        rgba(7, 9, 17, 0.7);
+    }
+
+    .trust-band .shell {
+      display: grid;
+      grid-template-columns: 0.38fr 0.62fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    .trust-band h2 {
+      margin: 0;
+      color: #ffffff;
+      text-shadow: 0 2px 16px rgba(5, 6, 13, 0.45);
+      font-family: var(--serif);
+      font-size: clamp(26px, 2.6vw, 34px);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+
+    .trust-band p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    /* ===========================================================
+       About
+       =========================================================== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .about-card {
+      padding: 32px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(13, 16, 26, 0.7);
+    }
+
+    .about-card.featured {
+      background:
+        linear-gradient(180deg, rgba(66, 229, 155, 0.06), rgba(11, 14, 24, 0.85)),
+        rgba(13, 16, 26, 0.7);
+      border-color: rgba(66, 229, 155, 0.22);
+    }
+
+    .about-card p {
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    .about-card em {
+      color: var(--ink);
+      font-style: normal;
+    }
+
+    .founder {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .founder-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2), transparent 45%),
+        linear-gradient(135deg, var(--green), var(--violet));
+      box-shadow: 0 0 24px rgba(124, 77, 255, 0.4);
+      flex: 0 0 auto;
+    }
+
+    .founder-text strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+
+    .founder-text span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ===========================================================
+       Contact
+       =========================================================== */
+    .contact {
+      background:
+        radial-gradient(ellipse 70% 80% at 80% 100%, rgba(124, 77, 255, 0.16), transparent 60%),
+        radial-gradient(ellipse 70% 80% at 20% 0%, rgba(66, 229, 155, 0.12), transparent 60%),
+        rgba(7, 9, 17, 0.7);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .contact-card {
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(13, 16, 26, 0.75);
+      backdrop-filter: blur(8px);
+    }
+
+    .contact-card.primary {
+      background:
+        linear-gradient(160deg, rgba(66, 229, 155, 0.12), transparent 60%),
+        rgba(13, 16, 26, 0.85);
+      border-color: rgba(66, 229, 155, 0.3);
+    }
+
+    .contact-card p {
+      color: var(--ink-soft);
+      line-height: 1.6;
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .contact-list {
+      display: grid;
+      gap: 14px;
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .contact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .contact-list li::before {
+      content: "›";
+      color: var(--green);
+      font-family: var(--mono);
+      font-weight: 700;
+      margin-top: -2px;
+    }
+
+    /* ===========================================================
+       Footer
+       =========================================================== */
+    .site-footer {
+      padding: 56px 0 32px;
+      border-top: 1px solid var(--line);
+      background: rgba(5, 6, 13, 0.92);
+      color: var(--muted);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+
+    .footer-grid h4 {
+      margin-bottom: 16px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .footer-grid ul {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .footer-grid a {
+      color: var(--ink-soft);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+
+    .footer-grid a:hover { color: var(--green); }
+
+    .footer-brand p {
+      margin: 12px 0 0;
+      max-width: 32ch;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footer-legal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .footer-legal a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      margin-left: 18px;
+    }
+
+    .footer-legal a:hover { color: var(--green); }
+
+    /* ===========================================================
+       Reveal on scroll
+       =========================================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 700ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===========================================================
+       Animations
+       =========================================================== */
+    @keyframes logo-breathe {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    @keyframes logo-aura {
+      0%, 100% { opacity: 0.42; transform: scale(0.985); }
+      50%      { opacity: 0.85; transform: scale(1.03); }
+    }
+
+    @keyframes startup-flicker {
+      0%        { opacity: 0.15; filter: brightness(0.6) saturate(0.6); }
+      9%        { opacity: 1;    filter: brightness(1.35) saturate(1.2); }
+      15%       { opacity: 0.38; filter: brightness(0.7) saturate(0.7); }
+      24%, 31%  { opacity: 1;    filter: brightness(1.22) saturate(1.15); }
+      27%       { opacity: 0.52; filter: brightness(0.75) saturate(0.8); }
+      100%      { opacity: 1; }
+    }
+
+    /* ===========================================================
+       Responsive
+       =========================================================== */
+    @media (max-width: 980px) {
+      .hero .shell { grid-template-columns: 1fr; gap: 28px; }
+      .hero-logo-wrap {
+        order: -1;
+        margin: 0 0 4px;
+        width: min(100%, 440px);
+        justify-self: start;
+      }
+      .section-head { grid-template-columns: 1fr; gap: 18px; }
+      .services-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .process-grid { grid-template-columns: 1fr; }
+      .process-grid::before { display: none; }
+      .trust-band .shell { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .insight-card { grid-template-columns: 1fr; }
+      .insight-side { border-right: 0; border-bottom: 1px solid var(--line); }
+      .about-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+      section { padding: 88px 0; }
+    }
+
+    @media (max-width: 700px) {
+      .shell { width: min(calc(100% - 28px), var(--max)); }
+      .site-header .shell {
+        min-height: 64px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 0;
+      }
+      .site-nav { width: 100%; gap: 14px; font-size: 13px; }
+      .hero { padding-top: 48px; padding-bottom: 64px; min-height: auto; }
+      .hero h1 { font-size: 42px; }
+      .field-body { margin: 12px 18px 18px; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-legal { flex-direction: column; align-items: flex-start; }
+      .footer-legal a { margin-left: 0; }
+      .bubble.b1 { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scene" aria-hidden="true">
+    <div class="lasers">
+      <div class="laser green l1"></div>
+      <div class="laser violet l2"></div>
+      <div class="laser cyan l3"></div>
+      <div class="laser violet l4"></div>
+    </div>
+    <div class="bubbles">
+      <div class="bubble b1"></div>
+      <div class="bubble b2"></div>
+      <div class="bubble b3"></div>
+      <div class="bubble b4"></div>
+      <div class="bubble b5"></div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="shell">
+      <a class="brand" href="#top" aria-label="138Labs Startseite">
+        <img src="logo-transparent-360.png" alt="" />
+        <span class="brand-text">
+          <small>AI / Automation</small>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Seitennavigation">
+        <a href="#leistungen">Leistungen</a>
+        <a href="#felder">Themen</a>
+        <a href="#arbeitsweise">Arbeitsweise</a>
+        <a href="#ueber">Über</a>
+        <a href="#kontakt" class="nav-cta">Gespräch starten</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell">
+        <div class="hero-content">
+          <div class="kicker">KI-Prototyping für reale Abläufe</div>
+          <h1>
+            <em>138Labs</em>
+            <span class="accent">macht KI testbar.</span>
+          </h1>
+          <p class="lead">
+            Für Organisationen mit einem klaren Blick auf konkrete Anwendungsfälle<br>
+            — Dokumente, Wissen, Anfragen, Prozesse, Prototypen —<br/>
+            Klein genug zum Testen. Konkret genug für Entscheidungen.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#kontakt">Thema einordnen <span class="arrow">→</span></a>
+            <a class="button button-secondary" href="#leistungen">Leistungen ansehen</a>
+          </div>
+          <div class="hero-meta">
+            <span>DSGVO-konform</span>
+            <span>Praxisorientiert</span>
+            <span>Aus Aachen</span>
+          </div>
+        </div>
+        <div class="hero-logo-wrap" aria-hidden="true">
+          <img class="hero-logo" src="logo-transparent-980.png" alt="" width="980" height="445" />
+        </div>
+      </div>
+    </section>
+
+    <section class="insight-strip reveal" aria-label="Anliegen und unsichere KI-Ideen">
+      <div class="shell">
+        <aside class="insight-card">
+          <div class="insight-side">
+            <span class="small-label">Startpunkt</span>
+            <strong>Unsichere KI-Ideen</strong>
+            <p>
+              Es gibt Interesse, aber noch keine belastbare Einschätzung, was technisch und organisatorisch sinnvoll ist.
+            </p>
+          </div>
+          <div class="insight-main">
+            <strong>Ein Anliegen reicht für den ersten Test.</strong>
+            <p>
+              Zum Beispiel ein Dokumenttyp, eine wiederkehrende Kundenfrage, ein Rechercheablauf
+              oder ein Prozess, bei dem Informationen heute noch manuell übertragen werden.
+            </p>
+            <div class="insight-path">
+              <span>Anliegen</span>
+              <span>Ausschnitt</span>
+              <span>Testbar</span>
+              <span>Entscheidung</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="leistungen">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="kicker">Leistungen</div>
+          <div>
+            <h2><em>Drei Einstiege,</em><br />je nachdem wo ihr steht.</h2><br>
+            <p>
+              Manche haben schon eine Idee und brauchen einen ersten, testbaren Stand.<br> Manche Teams brauchen Orientierung.<br> Andere wollen einen Prozess prüfen.
+            </p>
+          </div>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal">
+            <span class="number">01 / Workshops</span>
+            <h3>KI-Workshops</h3>
+            <p>Für Teams, die generative KI verstehen und auf die eigene Arbeit übertragen wollen.</p>
+            <ul>
+              <li>Was ChatGPT, Copilot und Agenten leisten können</li>
+              <li>Wo Grenzen, Datenschutzfragen und Fehlannahmen liegen</li>
+              <li>Welche Anwendungsfälle im eigenen Alltag sinnvoll wirken</li>
+            </ul>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="number">02 / Analyse</span>
+            <h3>Automatisierungsanalyse</h3>
+            <p>Für Abläufe, bei denen wiederholt Informationen gesucht, geprüft oder übertragen werden.</p>
+            <ul>
+              <li>Dokumente, E-Mails, Tabellen und Tools betrachten</li>
+              <li>Zeitfresser und Medienbrüche sichtbar machen</li>
+              <li>Nutzen, Aufwand und Risiken priorisieren</li>
+            </ul>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="number">03 / Prototyp</span>
+            <h3>KI-Prototyping</h3>
+            <p>Für Ideen, die klein und sauber getestet werden sollen.</p>
+            <ul>
+              <li>Assistenten, Suchsysteme oder Workflows skizzieren</li>
+              <li>Mit echten Beispieldaten ausprobieren</li>
+              <li>Entscheiden, ob sich weitere Umsetzung lohnt</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="felder">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="kicker">Themenfelder</div>
+          <div>
+            <h2><em>Dokumente, Wissen,</em><br />Assistenten und Abläufe.</h2><br>
+            <p>
+              138Labs unterstützt dort,<br>
+              wo Informationen gesucht, geprüft, zusammengefasst,<br>
+              weitergegeben oder in Entscheidungen übersetzt werden müssen.
+            </p>
+          </div>
+        </div>
+
+        <div class="fields-grid reveal">
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 01</span>
+                <h3>Dokumentenverarbeitung</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>PDFs, Formulare, Akten oder E-Mails auswerten und für den nächsten Arbeitsschritt vorbereiten.</p>
+              <ul>
+                <li>Unterlagen zusammenfassen</li>
+                <li>Felder und Aussagen extrahieren</li>
+                <li>Prüf- und Antwortprozesse vorbereiten</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 02</span>
+                <h3>Wissensmanagement</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>Vorhandenes Wissen auffindbar machen, ohne dass Mitarbeitende lange suchen müssen.</p>
+              <ul>
+                <li>Interne Dokumente durchsuchbar machen</li>
+                <li>Antworten aus vorhandenen Quellen ableiten</li>
+                <li>Wiederkehrende Fragen schneller klären</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 03</span>
+                <h3>KI-Assistenten</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>Assistenten für interne Abläufe, Kundenkommunikation oder Recherche mit klaren Grenzen testen.</p>
+              <ul>
+                <li>Antworten und Entwürfe vorbereiten</li>
+                <li>Quellen und Regeln sichtbar halten</li>
+                <li>Mit Beispielanfragen prüfen</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="field-card">
+            <summary>
+              <div>
+                <span class="field-num">Feld 04</span>
+                <h3>Prozessautomatisierung</h3>
+              </div>
+              <span class="field-toggle" aria-hidden="true">+</span>
+            </summary>
+            <div class="field-body">
+              <p>Mails, Tabellen, Tools und manuelle Übergaben schrittweise verbinden.</p>
+              <ul>
+                <li>Kopierarbeit reduzieren</li>
+                <li>Informationen automatisch vorbereiten</li>
+                <li>Mehrstufige Abläufe im kleinen Rahmen testen</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="process" id="arbeitsweise">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="kicker">Arbeitsweise</div>
+          <div>
+            <h2><em>Klein genug zum Testen.</em><br />Konkret genug für Entscheidungen.</h2><br>
+            <p>
+              Der Einstieg klärt schnell, ob ein Thema Substanz hat.<br>
+              Gute Prototypen beantworten nicht alles -<br>
+              aber sie machen Gefühle greifbar.
+            </p>
+          </div>
+        </div>
+
+        <div class="process-grid">
+          <article class="step reveal">
+            <span class="step-number">01</span>
+            <h3>Einordnen</h3>
+            <p>Du bringst ein Anliegen mit — eingehende Dokumente, interne Recherche, wiederkehrende Anfragen. Wir schauen auf Material, Beteiligte, Datenwege und den heutigen Ablauf.</p>
+          </article>
+          <article class="step reveal">
+            <span class="step-number">02</span>
+            <h3>Begrenzen</h3>
+            <p>Aus dem großen Thema wird ein kleiner Testfall: ein Dokumenttyp, zehn Beispielanfragen, ein wiederkehrender Schritt oder ein klarer Ausschnitt aus einem Prozess.</p>
+          </article>
+          <article class="step reveal">
+            <span class="step-number">03</span>
+            <h3>Testen</h3>
+            <p>Der Ausschnitt wird praktisch geprüft — als Workshop, Automatisierungsanalyse oder Prototyp, der mit echten Beispielen zeigt, was funktioniert und was nicht.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-band" aria-label="Datenschutz und realistische Umsetzung">
+      <div class="shell">
+        <div>
+          <div class="kicker" style="margin-bottom: 12px;">Vertrauen</div>
+          <h2>DSGVO-konform von Anfang an.</h2>
+        </div>
+        <p>
+          Datenschutz, Datenwege und nachvollziehbare Ergebnisse werden früh mitgedacht:
+          Welche Daten dürfen genutzt werden? Wo werden sie verarbeitet? Was muss belegbar bleiben?
+          So entstehen KI-Tests, die praktisch nutzbar und sauber eingeordnet sind.
+        </p>
+      </div>
+    </section>
+
+    <section id="ueber">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="kicker">Über 138Labs</div>
+          <div>
+            <h2><em>Pragmatisch,</em> technisch, realisiert.</h2><br>
+            <p>
+              138Labs steht für praxisnahe KI-Arbeit:<br>
+              neue Systeme verstehen,<br>
+              reale Abläufe ansehen,<br>
+              schnell zu einem überprüfbaren Stand kommen.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-grid">
+          <article class="about-card featured reveal">
+            <h3>Wofür 138Labs steht</h3>
+            <ul>
+              <li>Technisches Verständnis</li>
+              <li>Schnelle Prototypen statt monatelanger Konzepte</li>
+              <li>Verständliche Kommunikation</li>
+              <li>Fokus auf realen Nutzen</li>
+            </ul>
+            <br />
+            <p>Ziel ist ein belastbarer erster Schritt, nicht die größte Plattform.</p>
+          </article>
+          <article class="about-card reveal">
+            <h3>Wer hinter 138Labs steht</h3>
+            <p>
+              Der fachliche Hintergrund liegt in digitalen Geschäftsmodellen, Automatisierung
+              und der praktischen Anwendung neuer Technologien.
+            </p>
+            <div class="founder">
+              <div class="founder-mark" aria-hidden="true"></div>
+              <div class="founder-text">
+                <strong>Robert Hormann</strong>
+                <span>Digital Innovation &amp; Business · FH Aachen</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="kontakt">
+      <div class="shell">
+        <div class="section-head reveal">
+          <div class="kicker">Kontakt</div>
+          <div>
+            <h2><em>Eine konkrete Beobachtung</em> reicht.</h2><br>
+            <p>
+              "Wir prüfen viele Dokumente manuell."<br>
+              "Unser Team will KI besser verstehen."<br>
+              "Wir haben eine Idee für einen Agenten,<br>
+              wissen aber nicht, ob sie realistisch ist."
+            </p>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <article class="contact-card primary reveal">
+            <h3>Erstgespräch</h3>
+            <p>Kurze Nachricht mit Kontext genügt:<br /> Was kostet Zeit, wo liegen Informationen, welche Idee soll greifbarer werden?</p>
+            <div class="contact-actions">
+              <a class="button button-primary" href="mailto:robert@138labs.de">robert@138labs.de <span class="arrow">→</span></a>
+              <a class="button button-secondary" href="https://de.linkedin.com/in/robert-hormann-76a15621b" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+          </article>
+          <article class="contact-card reveal">
+            <h3>Guter Startpunkt</h3>
+            <p>Es muss nichts ausformuliert sein. Hilfreich für das erste Gespräch:</p>
+            <ul class="contact-list">
+              <li>Ein Beispielprozess oder Dokumenttyp</li>
+              <li>Eine wiederkehrende Frage aus dem Alltag</li>
+              <li>Eine grobe KI-Idee, die geprüft werden soll</li>
+              <li>Ein Team, das sich orientieren möchte</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="#top" style="color: var(--ink);">
+            <img src="logo-transparent-360.png" alt="" />
+            <span class="brand-text"><small>AI / Automation</small></span>
+          </a>
+          <p>KI-Prototypen, Automatisierungen und Workshops für Organisationen mit konkreten Anwendungsfällen.</p>
+        </div>
+        <div>
+          <h4>Leistungen</h4>
+          <ul>
+            <li><a href="#leistungen">KI-Workshops</a></li>
+            <li><a href="#leistungen">Automatisierungsanalyse</a></li>
+            <li><a href="#leistungen">KI-Prototyping</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Themen</h4>
+          <ul>
+            <li><a href="#felder">Dokumente</a></li>
+            <li><a href="#felder">Wissen</a></li>
+            <li><a href="#felder">Assistenten</a></li>
+            <li><a href="#felder">Prozesse</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Kontakt</h4>
+          <ul>
+            <li><a href="mailto:robert@138labs.de">robert@138labs.de</a></li>
+            <li><a href="https://de.linkedin.com/in/robert-hormann-76a15621b" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <span>© <span id="year">2026</span> 138Labs · Robert Hormann · Aachen</span>
+        <div>
+          <a href="impressum.html">Impressum</a>
+          <a href="impressum.html#datenschutz">Datenschutz</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Reveal on scroll
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var els = document.querySelectorAll(".reveal");
+      if (reduce || !("IntersectionObserver" in window)) {
+        els.forEach(function (el) { el.classList.add("is-visible"); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+      els.forEach(function (el) { io.observe(el); });
+    })();
+
+    // Keep field overlays readable by allowing one open card at a time.
+    (function () {
+      var fieldCards = document.querySelectorAll(".field-card");
+      fieldCards.forEach(function (card) {
+        card.addEventListener("toggle", function () {
+          if (!card.open) return;
+          fieldCards.forEach(function (other) {
+            if (other !== card) other.open = false;
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
