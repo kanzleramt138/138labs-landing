@@ -40,6 +40,7 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-padding-top: 96px;
     }
 
     body {
@@ -229,6 +230,7 @@
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--line);
+      transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
     .site-header .shell {
@@ -237,6 +239,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 24px;
+      transition: min-height 180ms ease, padding 180ms ease, gap 180ms ease;
     }
 
     .brand {
@@ -253,6 +256,7 @@
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 0 12px rgba(124, 77, 255, 0.35));
+      transition: width 180ms ease, filter 180ms ease;
     }
 
     .brand .brand-text {
@@ -275,6 +279,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 22px;
+      transition: gap 180ms ease;
     }
 
     .site-nav a {
@@ -283,6 +288,25 @@
       font-weight: 600;
       text-decoration: none;
       transition: color 160ms ease;
+    }
+
+    .site-header.is-condensed {
+      background: rgba(5, 6, 13, 0.88);
+      border-bottom-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+    }
+
+    .site-header.is-condensed .shell {
+      min-height: 56px;
+    }
+
+    .site-header.is-condensed .brand img {
+      width: 66px;
+      filter: drop-shadow(0 0 8px rgba(124, 77, 255, 0.28));
+    }
+
+    .site-header.is-condensed .site-nav {
+      gap: 16px;
     }
 
     .site-nav a:hover,
@@ -845,6 +869,7 @@
 
     .field-card summary h3 {
       margin: 0;
+      min-width: 0;
     }
 
     .field-toggle {
@@ -1382,6 +1407,18 @@
     /* ===========================================================
        Responsive
        =========================================================== */
+    @media (max-width: 1180px) {
+      .hero .shell {
+        grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.85fr);
+        gap: 32px;
+      }
+
+      .hero-logo-wrap {
+        width: min(100%, 460px);
+        margin-right: 0;
+      }
+    }
+
     @media (max-width: 980px) {
       .hero .shell { grid-template-columns: 1fr; gap: 28px; }
       .hero-logo-wrap {
@@ -1406,23 +1443,233 @@
       section { padding: 88px 0; }
     }
 
+    @media (max-width: 760px) {
+      html { scroll-padding-top: 134px; }
+
+      .site-header .shell {
+        min-height: auto;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 12px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      .site-header.is-condensed .shell {
+        gap: 8px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .brand {
+        gap: 10px;
+        width: fit-content;
+      }
+
+      .brand img {
+        width: 96px;
+      }
+
+      .brand small {
+        font-size: 9px;
+        letter-spacing: 0.14em;
+      }
+
+      .site-header.is-condensed .brand img {
+        width: 72px;
+      }
+
+      .site-header.is-condensed .brand small {
+        display: none;
+      }
+
+      .site-nav {
+        width: 100%;
+        flex-wrap: nowrap;
+        gap: 14px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .site-nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .site-nav a {
+        flex: 0 0 auto;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .site-header.is-condensed .site-nav {
+        gap: 12px;
+      }
+
+      .site-header.is-condensed .site-nav a {
+        font-size: 12px;
+      }
+
+      .nav-cta {
+        padding: 7px 12px;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .service-card {
+        min-height: auto;
+        padding: 24px;
+        border-radius: 18px;
+      }
+
+      .service-card .number {
+        margin-bottom: 28px;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+      }
+
+      .service-card h3 {
+        font-size: 30px;
+        line-height: 1.06;
+      }
+
+      .service-card ul {
+        margin-top: 18px;
+      }
+
+      .fields-grid {
+        width: 100%;
+        gap: 14px;
+      }
+
+      .field-card {
+        border-radius: 18px;
+      }
+
+      .field-card summary {
+        grid-template-columns: minmax(0, 1fr) 36px;
+        gap: 12px;
+        padding: 22px 20px;
+      }
+
+      .field-card summary h3 {
+        font-size: 28px;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+      }
+
+      .field-card .field-num {
+        margin-bottom: 8px;
+        font-size: 10px;
+      }
+
+      .field-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+      }
+
+      .field-body {
+        margin: 10px 14px 16px;
+        padding: 24px 20px 22px;
+        border-radius: 24px;
+      }
+
+      .field-body p,
+      .field-body li {
+        font-size: 14px;
+      }
+    }
+
     @media (max-width: 700px) {
       .shell { width: min(calc(100% - 28px), var(--max)); }
-      .site-header .shell {
-        min-height: 64px;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 14px 0;
-      }
-      .site-nav { width: 100%; gap: 14px; font-size: 13px; }
       .hero { padding-top: 48px; padding-bottom: 64px; min-height: auto; }
       .hero h1 { font-size: 42px; }
       .intro { font-size: 13px; line-height: 1.6; padding-left: 14px; }
-      .field-body { margin: 12px 18px 18px; }
       .footer-grid { grid-template-columns: 1fr; }
       .footer-legal { flex-direction: column; align-items: flex-start; }
       .footer-legal a { margin-left: 0; }
       .bubble.b1 { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      html { scroll-padding-top: 126px; }
+
+      .shell {
+        width: min(calc(100% - 24px), var(--max));
+      }
+
+      .site-header .shell {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      .brand img {
+        width: 86px;
+      }
+
+      .brand small {
+        font-size: 8px;
+        letter-spacing: 0.12em;
+      }
+
+      .site-header.is-condensed .brand img {
+        width: 64px;
+      }
+
+      .site-nav {
+        gap: 12px;
+      }
+
+      .site-nav a {
+        font-size: 12px;
+      }
+
+      .nav-cta {
+        padding: 7px 11px;
+      }
+
+      .hero {
+        padding-top: 38px;
+      }
+
+      .hero-logo-wrap {
+        width: min(100%, 320px);
+      }
+
+      .service-card {
+        padding: 22px 20px;
+      }
+
+      .service-card h3 {
+        font-size: 28px;
+      }
+
+      .service-card li,
+      .service-card > p {
+        font-size: 14px;
+      }
+
+      .field-card summary {
+        grid-template-columns: minmax(0, 1fr) 34px;
+        padding: 20px 18px;
+      }
+
+      .field-card summary h3 {
+        font-size: 25px;
+      }
+
+      .field-toggle {
+        width: 34px;
+        height: 34px;
+        font-size: 19px;
+      }
     }
   </style>
 </head>
@@ -1853,6 +2100,25 @@
   <script>
     // Year
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Condense the sticky header once content starts scrolling underneath it.
+    (function () {
+      var header = document.querySelector(".site-header");
+      if (!header) return;
+
+      var ticking = false;
+      function updateHeader() {
+        header.classList.toggle("is-condensed", window.scrollY > 24);
+        ticking = false;
+      }
+
+      updateHeader();
+      window.addEventListener("scroll", function () {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateHeader);
+      }, { passive: true });
+    })();
 
     // Reveal on scroll
     (function () {
