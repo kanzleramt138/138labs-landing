@@ -366,6 +366,46 @@
       opacity: 0.64;
     }
 
+    .language-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      min-height: 40px;
+      padding: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .language-toggle button {
+      min-width: 36px;
+      min-height: 30px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease, box-shadow 180ms ease;
+    }
+
+    .language-toggle button:hover,
+    .language-toggle button:focus-visible {
+      outline: none;
+      color: var(--ink);
+      background: rgba(66, 229, 155, 0.075);
+    }
+
+    .language-toggle button.is-active {
+      color: var(--charcoal);
+      background: var(--green);
+      box-shadow: 0 0 16px rgba(66, 229, 155, 0.18);
+    }
+
     .site-header.is-condensed {
       background: rgba(5, 6, 13, 0.92);
       border-bottom-color: rgba(66, 229, 155, 0.14);
@@ -1643,6 +1683,11 @@
         padding: 10px 14px !important;
       }
 
+      .language-toggle {
+        justify-content: center;
+        margin-top: 4px;
+      }
+
       .services-grid {
         grid-template-columns: 1fr;
         gap: 14px;
@@ -1836,6 +1881,10 @@
         <a href="#arbeitsweise">Arbeitsweise</a>
         <a href="#ueber">Über</a>
         <a href="#kontakt" class="nav-cta">Erstgespräch</a>
+        <div class="language-toggle" aria-label="Sprache wählen">
+          <button type="button" data-lang="de" class="is-active" aria-pressed="true">DE</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
       </nav>
     </div>
   </header>
@@ -2233,6 +2282,232 @@
     // Year
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // Lightweight language switcher. German remains the source/default content.
+    (function () {
+      var supported = ["de", "en"];
+      var storageKey = "138labs-language";
+      var menuLabels = {
+        de: { open: "Menü öffnen", close: "Menü schließen" },
+        en: { open: "Open menu", close: "Close menu" }
+      };
+
+      var translations = [
+        { selector: "title", text: { de: "138Labs — KI testbar machen", en: "138Labs — making AI testable" } },
+        { selector: ".brand", attr: "aria-label", text: { de: "138Labs Startseite", en: "138Labs homepage" } },
+        { selector: ".site-nav", attr: "aria-label", text: { de: "Seitennavigation", en: "Site navigation" } },
+        { selector: ".language-toggle", attr: "aria-label", text: { de: "Sprache wählen", en: "Choose language" } },
+        { selector: "a[href='#leistungen']", all: true, text: { de: "Leistungen", en: "Services" } },
+        { selector: "a[href='#felder']", all: true, text: { de: "Themen", en: "Focus" } },
+        { selector: "a[href='#arbeitsweise']", text: { de: "Arbeitsweise", en: "How we work" } },
+        { selector: "a[href='#ueber']", text: { de: "Über", en: "About" } },
+        { selector: ".site-nav .nav-cta", text: { de: "Erstgespräch", en: "First call" } },
+
+        { selector: ".hero .kicker", text: { de: "KI-Prototyping für reale Abläufe", en: "AI prototyping for real workflows" } },
+        { selector: ".hero h1 .accent", text: { de: "macht KI testbar.", en: "makes AI testable." } },
+        { selector: ".hero .intro", html: { de: "Für Organisationen mit einem klaren Blick auf konkrete Anwendungsfälle<br>Klein genug zum Testen. Konkret genug für Entscheidungen.", en: "For organizations with a clear view of concrete use cases<br>Small enough to test. Concrete enough for decisions." } },
+        { selector: ".hero-actions .button-primary", html: { de: "Anliegen einordnen <span class=\"arrow\">→</span>", en: "Frame a use case <span class=\"arrow\">→</span>" } },
+        { selector: ".hero-actions .button-secondary", text: { de: "Leistungen ansehen", en: "View services" } },
+        { selector: ".hero-meta span:nth-child(1)", text: { de: "DSGVO-konform", en: "GDPR-compliant" } },
+        { selector: ".hero-meta span:nth-child(2)", text: { de: "Praxisorientiert", en: "Practice-oriented" } },
+        { selector: ".hero-meta span:nth-child(3)", text: { de: "Aus Aachen", en: "Based in Aachen" } },
+
+        { selector: ".insight-strip", attr: "aria-label", text: { de: "Anliegen und unsichere KI-Ideen", en: "Use cases and uncertain AI ideas" } },
+        { selector: ".insight-side .small-label", text: { de: "Startpunkt", en: "Starting point" } },
+        { selector: ".insight-side strong", text: { de: "Unsichere KI-Ideen ?", en: "Unclear AI ideas?" } },
+        { selector: ".insight-side .intro", text: { de: "Es gibt Interesse, aber noch keine belastbare Einschätzung, was technisch und organisatorisch sinnvoll ist?", en: "There is interest, but no reliable view yet on what is technically and organizationally sensible?" } },
+        { selector: ".insight-main strong", text: { de: "Ein Anliegen reicht für den ersten Test.", en: "One concrete concern is enough for a first test." } },
+        { selector: ".insight-main .intro", text: { de: "Zum Beispiel ein Dokumenttyp, eine wiederkehrende Kundenfrage, ein Rechercheablauf oder ein Prozess, bei dem Informationen heute noch manuell übertragen werden.", en: "For example a document type, a recurring customer question, a research workflow, or a process where information is still transferred manually today." } },
+        { selector: ".insight-path span:nth-child(1)", text: { de: "Anliegen", en: "Concern" } },
+        { selector: ".insight-path span:nth-child(2)", text: { de: "Ausschnitt", en: "Scope" } },
+        { selector: ".insight-path span:nth-child(3)", text: { de: "Testbar", en: "Testable" } },
+        { selector: ".insight-path span:nth-child(4)", text: { de: "Entscheidung", en: "Decision" } },
+
+        { selector: "#leistungen .kicker", text: { de: "Leistungen", en: "Services" } },
+        { selector: "#leistungen h2", html: { de: "<em>Drei Einstiege,</em><br>je nachdem wo ihr steht.", en: "<em>Three entry points,</em><br>depending on where you are." } },
+        { selector: "#leistungen .section-head .intro", html: { de: "Manche haben schon eine Idee und brauchen einen ersten, testbaren Stand.<br> Manche Teams brauchen Orientierung.<br> Andere wollen einen Prozess prüfen.", en: "Some already have an idea and need a first testable version.<br> Some teams need orientation.<br> Others want to examine a process." } },
+        { selector: ".service-card:nth-child(1) h3", text: { de: "KI-Workshops", en: "AI workshops" } },
+        { selector: ".service-card:nth-child(1) > p", text: { de: "Für Teams, die generative KI verstehen und auf die eigene Arbeit übertragen wollen.", en: "For teams that want to understand generative AI and transfer it to their own work." } },
+        { selector: ".service-card:nth-child(1) li:nth-child(1)", text: { de: "Was ChatGPT, Copilot und Agenten leisten können", en: "What ChatGPT, Copilot, and agents can do" } },
+        { selector: ".service-card:nth-child(1) li:nth-child(2)", text: { de: "Wo Grenzen, Datenschutzfragen und Fehlannahmen liegen", en: "Where limits, privacy questions, and false assumptions appear" } },
+        { selector: ".service-card:nth-child(1) li:nth-child(3)", text: { de: "Welche Anwendungsfälle im eigenen Alltag sinnvoll wirken", en: "Which use cases make sense in everyday work" } },
+        { selector: ".service-card:nth-child(2) .number", text: { de: "02 / Analyse", en: "02 / Analysis" } },
+        { selector: ".service-card:nth-child(2) h3", text: { de: "Automatisierungsanalyse", en: "Automation analysis" } },
+        { selector: ".service-card:nth-child(2) > p", text: { de: "Für Abläufe, bei denen wiederholt Informationen gesucht, geprüft oder übertragen werden.", en: "For workflows where information is repeatedly searched, checked, or transferred." } },
+        { selector: ".service-card:nth-child(2) li:nth-child(1)", text: { de: "Dokumente, E-Mails, Tabellen und Tools betrachten", en: "Review documents, emails, spreadsheets, and tools" } },
+        { selector: ".service-card:nth-child(2) li:nth-child(2)", text: { de: "Zeitfresser und Medienbrüche sichtbar machen", en: "Make time sinks and handoff breaks visible" } },
+        { selector: ".service-card:nth-child(2) li:nth-child(3)", text: { de: "Nutzen, Aufwand und Risiken priorisieren", en: "Prioritize value, effort, and risks" } },
+        { selector: ".service-card:nth-child(3) .number", text: { de: "03 / Prototyp", en: "03 / Prototype" } },
+        { selector: ".service-card:nth-child(3) h3", text: { de: "KI-Prototyping", en: "AI prototyping" } },
+        { selector: ".service-card:nth-child(3) > p", text: { de: "Für Ideen, die klein und sauber getestet werden sollen.", en: "For ideas that should be tested in a small and clean way." } },
+        { selector: ".service-card:nth-child(3) li:nth-child(1)", text: { de: "Assistenten, Suchsysteme oder Workflows skizzieren", en: "Sketch assistants, search systems, or workflows" } },
+        { selector: ".service-card:nth-child(3) li:nth-child(2)", text: { de: "Mit echten Beispieldaten ausprobieren", en: "Try things with real example data" } },
+        { selector: ".service-card:nth-child(3) li:nth-child(3)", text: { de: "Entscheiden, ob sich weitere Umsetzung lohnt", en: "Decide whether further implementation is worthwhile" } },
+
+        { selector: "#felder .kicker", text: { de: "Themenfelder", en: "Focus areas" } },
+        { selector: "#felder h2", html: { de: "<em>Dokumente, Wissen,</em><br>Assistenten und Abläufe.", en: "<em>Documents, knowledge,</em><br>assistants and workflows." } },
+        { selector: "#felder .section-head .intro", text: { de: "138Labs unterstützt dort, wo Informationen gesucht, geprüft, zusammengefasst, weitergegeben oder in Entscheidungen übersetzt werden müssen.", en: "138Labs supports work where information needs to be found, checked, summarized, passed on, or translated into decisions." } },
+        { selector: ".field-card:nth-child(1) .field-num", text: { de: "Feld 01", en: "Field 01" } },
+        { selector: ".field-card:nth-child(1) h3", text: { de: "Dokumentenverarbeitung", en: "Document processing" } },
+        { selector: ".field-card:nth-child(1) .field-body p", text: { de: "PDFs, Formulare, Akten oder E-Mails auswerten und für den nächsten Arbeitsschritt vorbereiten.", en: "Evaluate PDFs, forms, files, or emails and prepare them for the next work step." } },
+        { selector: ".field-card:nth-child(1) li:nth-child(1)", text: { de: "Unterlagen zusammenfassen", en: "Summarize documents" } },
+        { selector: ".field-card:nth-child(1) li:nth-child(2)", text: { de: "Felder und Aussagen extrahieren", en: "Extract fields and statements" } },
+        { selector: ".field-card:nth-child(1) li:nth-child(3)", text: { de: "Prüf- und Antwortprozesse vorbereiten", en: "Prepare review and response processes" } },
+        { selector: ".field-card:nth-child(2) .field-num", text: { de: "Feld 02", en: "Field 02" } },
+        { selector: ".field-card:nth-child(2) h3", text: { de: "Wissensmanagement", en: "Knowledge management" } },
+        { selector: ".field-card:nth-child(2) .field-body p", text: { de: "Vorhandenes Wissen auffindbar machen, ohne dass Mitarbeitende lange suchen müssen.", en: "Make existing knowledge findable without employees having to search for a long time." } },
+        { selector: ".field-card:nth-child(2) li:nth-child(1)", text: { de: "Interne Dokumente durchsuchbar machen", en: "Make internal documents searchable" } },
+        { selector: ".field-card:nth-child(2) li:nth-child(2)", text: { de: "Antworten aus vorhandenen Quellen ableiten", en: "Derive answers from existing sources" } },
+        { selector: ".field-card:nth-child(2) li:nth-child(3)", text: { de: "Wiederkehrende Fragen schneller klären", en: "Clarify recurring questions faster" } },
+        { selector: ".field-card:nth-child(3) .field-num", text: { de: "Feld 03", en: "Field 03" } },
+        { selector: ".field-card:nth-child(3) h3", text: { de: "KI-Assistenten", en: "AI assistants" } },
+        { selector: ".field-card:nth-child(3) .field-body p", text: { de: "Assistenten für interne Abläufe, Kundenkommunikation oder Recherche mit klaren Grenzen testen.", en: "Test assistants for internal workflows, customer communication, or research with clear boundaries." } },
+        { selector: ".field-card:nth-child(3) li:nth-child(1)", text: { de: "Antworten und Entwürfe vorbereiten", en: "Prepare answers and drafts" } },
+        { selector: ".field-card:nth-child(3) li:nth-child(2)", text: { de: "Quellen und Regeln sichtbar halten", en: "Keep sources and rules visible" } },
+        { selector: ".field-card:nth-child(3) li:nth-child(3)", text: { de: "Mit Beispielanfragen prüfen", en: "Test with example requests" } },
+        { selector: ".field-card:nth-child(4) .field-num", text: { de: "Feld 04", en: "Field 04" } },
+        { selector: ".field-card:nth-child(4) h3", text: { de: "Prozessautomatisierung", en: "Process automation" } },
+        { selector: ".field-card:nth-child(4) .field-body p", text: { de: "Mails, Tabellen, Tools und manuelle Übergaben schrittweise verbinden.", en: "Connect emails, spreadsheets, tools, and manual handoffs step by step." } },
+        { selector: ".field-card:nth-child(4) li:nth-child(1)", text: { de: "Kopierarbeit reduzieren", en: "Reduce copy work" } },
+        { selector: ".field-card:nth-child(4) li:nth-child(2)", text: { de: "Informationen automatisch vorbereiten", en: "Prepare information automatically" } },
+        { selector: ".field-card:nth-child(4) li:nth-child(3)", text: { de: "Mehrstufige Abläufe im kleinen Rahmen testen", en: "Test multi-step workflows on a small scale" } },
+
+        { selector: "#arbeitsweise .kicker", text: { de: "Arbeitsweise", en: "How we work" } },
+        { selector: "#arbeitsweise h2", html: { de: "<em>Klein genug zum Testen.</em><br>Konkret genug für Entscheidungen.", en: "<em>Small enough to test.</em><br>Concrete enough for decisions." } },
+        { selector: "#arbeitsweise .section-head .intro", html: { de: "Der Einstieg klärt schnell, ob ein Thema Substanz hat.<br>Gute Prototypen beantworten nicht alles -<br>aber sie machen Gefühle greifbar.", en: "The entry point quickly shows whether a topic has substance.<br>Good prototypes do not answer everything -<br>but they make assumptions tangible." } },
+        { selector: ".step:nth-child(1) h3", text: { de: "Einordnen", en: "Frame" } },
+        { selector: ".step:nth-child(1) p", text: { de: "Du bringst ein Anliegen mit — eingehende Dokumente, interne Recherche, wiederkehrende Anfragen. Wir schauen auf Material, Beteiligte, Datenwege und den heutigen Ablauf.", en: "You bring a concrete concern - incoming documents, internal research, recurring requests. We look at material, stakeholders, data paths, and the current workflow." } },
+        { selector: ".step:nth-child(2) h3", text: { de: "Begrenzen", en: "Scope" } },
+        { selector: ".step:nth-child(2) p", text: { de: "Aus dem großen Thema wird ein kleiner Testfall: ein Dokumenttyp, zehn Beispielanfragen, ein wiederkehrender Schritt oder ein klarer Ausschnitt aus einem Prozess.", en: "The broad topic becomes a small test case: one document type, ten example requests, a recurring step, or a clear slice of a process." } },
+        { selector: ".step:nth-child(3) h3", text: { de: "Testen", en: "Test" } },
+        { selector: ".step:nth-child(3) p", text: { de: "Der Ausschnitt wird praktisch geprüft — als Workshop, Automatisierungsanalyse oder Prototyp, der mit echten Beispielen zeigt, was funktioniert und was nicht.", en: "The slice is tested practically - as a workshop, automation analysis, or prototype that uses real examples to show what works and what does not." } },
+
+        { selector: ".trust-band", attr: "aria-label", text: { de: "Datenschutz und realistische Umsetzung", en: "Privacy and realistic implementation" } },
+        { selector: ".trust-band .kicker", text: { de: "Vertrauen", en: "Trust" } },
+        { selector: ".trust-band h2", text: { de: "DSGVO-konform von Anfang an.", en: "GDPR-compliant from the start." } },
+        { selector: ".trust-band .intro", html: { de: "Datenschutz, Datenwege und nachvollziehbare Ergebnisse werden früh mitgedacht:<br>Welche Daten dürfen genutzt werden? Wo werden sie verarbeitet? Was muss belegbar bleiben?<br>So entstehen KI-Tests, die praktisch nutzbar und sauber eingeordnet sind.", en: "Privacy, data paths, and traceable results are considered early:<br>Which data may be used? Where is it processed? What needs to remain auditable?<br>This creates AI tests that are practical and properly framed." } },
+
+        { selector: "#ueber .kicker", text: { de: "Über 138Labs", en: "About 138Labs" } },
+        { selector: "#ueber .section-head h2", html: { de: "<em>Pragmatisch,</em> technisch, realisiert.", en: "<em>Pragmatic,</em> technical, implemented." } },
+        { selector: "#ueber .section-head .intro", html: { de: "138Labs steht für praxisnahe KI-Arbeit:<br>neue Systeme verstehen,<br>reale Abläufe ansehen,<br>schnell zu einem überprüfbaren Stand kommen.", en: "138Labs stands for practical AI work:<br>understanding new systems,<br>looking at real workflows,<br>quickly reaching a verifiable state." } },
+        { selector: ".about-card.featured h3", text: { de: "Wofür 138Labs steht", en: "What 138Labs stands for" } },
+        { selector: ".about-card.featured li:nth-child(1)", text: { de: "Technisches Verständnis", en: "Technical understanding" } },
+        { selector: ".about-card.featured li:nth-child(2)", text: { de: "Schnelle Prototypen statt monatelanger Konzepte", en: "Fast prototypes instead of months of concepts" } },
+        { selector: ".about-card.featured li:nth-child(3)", text: { de: "Verständliche Kommunikation", en: "Clear communication" } },
+        { selector: ".about-card.featured li:nth-child(4)", text: { de: "Fokus auf realen Nutzen", en: "Focus on real value" } },
+        { selector: ".about-card.featured p", text: { de: "Ziel ist ein belastbarer erster Schritt!", en: "The goal is a reliable first step." } },
+        { selector: ".about-founder h3", text: { de: "Wer hinter 138Labs steht", en: "Who is behind 138Labs" } },
+        { selector: ".about-founder-copy > p", text: { de: "Der fachliche Hintergrund liegt in digitalen Geschäftsmodellen, Automatisierung und der praktischen Anwendung neuer Technologien.", en: "The professional background is in digital business models, automation, and the practical application of new technologies." } },
+
+        { selector: "#kontakt .kicker", text: { de: "Kontakt", en: "Contact" } },
+        { selector: "#kontakt .section-head h2", html: { de: "<em>Eine konkrete Beobachtung</em> reicht.", en: "<em>One concrete observation</em> is enough." } },
+        { selector: "#kontakt .section-head .intro", html: { de: "\"Wir haben eine Idee für einen Agenten, wissen aber nicht, ob sie realistisch ist.\"<br>\"Wir prüfen viele Dokumente manuell.\"<br>\"Unser Team will KI besser verstehen.\"", en: "\"We have an idea for an agent, but we do not know whether it is realistic.\"<br>\"We manually review many documents.\"<br>\"Our team wants to understand AI better.\"" } },
+        { selector: ".contact-card.primary h3", text: { de: "Erstgespräch", en: "First call" } },
+        { selector: ".contact-card.primary > p", html: { de: "Kurze Nachricht mit Kontext genügt:<br> Was kostet Zeit, wo liegen Informationen, welche Idee soll greifbarer werden?", en: "A short message with context is enough:<br> What costs time, where is information located, which idea should become more tangible?" } },
+        { selector: ".contact-socials", attr: "aria-label", text: { de: "Schnellkontakt", en: "Quick contact" } },
+        { selector: ".contact-socials a[href^='mailto']", attr: "aria-label", text: { de: "Mail an robert@138labs.de", en: "Email robert@138labs.de" } },
+        { selector: ".contact-socials a[href*='linkedin']", attr: "aria-label", text: { de: "LinkedIn Profil", en: "LinkedIn profile" } },
+        { selector: ".contact-socials a[href*='github']", attr: "aria-label", text: { de: "GitHub Profil", en: "GitHub profile" } },
+        { selector: ".contact-card:not(.primary) h3", text: { de: "Guter Startpunkt", en: "Good starting point" } },
+        { selector: ".contact-card:not(.primary) > p", text: { de: "Es muss nichts ausformuliert sein. Hilfreich für das erste Gespräch:", en: "Nothing needs to be fully written out. Helpful for the first conversation:" } },
+        { selector: ".contact-list li:nth-child(1)", text: { de: "Ein Beispielprozess oder Dokumenttyp", en: "An example process or document type" } },
+        { selector: ".contact-list li:nth-child(2)", text: { de: "Eine wiederkehrende Frage aus dem Alltag", en: "A recurring everyday question" } },
+        { selector: ".contact-list li:nth-child(3)", text: { de: "Eine grobe KI-Idee, die geprüft werden soll", en: "A rough AI idea that should be checked" } },
+        { selector: ".contact-list li:nth-child(4)", text: { de: "Ein Team, das sich orientieren möchte", en: "A team that wants orientation" } },
+
+        { selector: ".footer-brand p", html: { de: "KI-Prototypen,<br> Automatisierungen<br> und Workshops.", en: "AI prototypes,<br> automation<br> and workshops." } },
+        { selector: ".footer-grid > div:nth-child(2) h4", text: { de: "Leistungen", en: "Services" } },
+        { selector: ".footer-grid > div:nth-child(2) li:nth-child(1) a", text: { de: "KI-Workshops", en: "AI workshops" } },
+        { selector: ".footer-grid > div:nth-child(2) li:nth-child(2) a", text: { de: "Automatisierungsanalyse", en: "Automation analysis" } },
+        { selector: ".footer-grid > div:nth-child(2) li:nth-child(3) a", text: { de: "KI-Prototyping", en: "AI prototyping" } },
+        { selector: ".footer-grid > div:nth-child(3) h4", text: { de: "Themen", en: "Focus" } },
+        { selector: ".footer-grid > div:nth-child(3) li:nth-child(1) a", text: { de: "Dokumente", en: "Documents" } },
+        { selector: ".footer-grid > div:nth-child(3) li:nth-child(2) a", text: { de: "Wissen", en: "Knowledge" } },
+        { selector: ".footer-grid > div:nth-child(3) li:nth-child(3) a", text: { de: "Assistenten", en: "Assistants" } },
+        { selector: ".footer-grid > div:nth-child(3) li:nth-child(4) a", text: { de: "Prozesse", en: "Processes" } },
+        { selector: ".footer-grid > div:nth-child(4) h4", text: { de: "Kontakt", en: "Contact" } },
+        { selector: ".footer-legal a:nth-child(1)", text: { de: "Impressum", en: "Legal notice" } },
+        { selector: ".footer-legal a:nth-child(2)", text: { de: "Datenschutz", en: "Privacy" } }
+      ];
+
+      function getInitialLanguage() {
+        var queryLang = new URLSearchParams(window.location.search).get("lang");
+        if (supported.indexOf(queryLang) !== -1) return queryLang;
+        try {
+          var storedLang = window.localStorage.getItem(storageKey);
+          if (supported.indexOf(storedLang) !== -1) return storedLang;
+        } catch (error) {}
+        return "de";
+      }
+
+      function updateUrl(lang) {
+        var url = new URL(window.location.href);
+        if (lang === "de") {
+          url.searchParams.delete("lang");
+        } else {
+          url.searchParams.set("lang", lang);
+        }
+        window.history.replaceState({}, "", url);
+      }
+
+      function updateMenuLabel(lang) {
+        var header = document.querySelector(".site-header");
+        var navToggle = document.querySelector(".nav-toggle");
+        if (!navToggle) return;
+        var open = header && header.classList.contains("nav-open");
+        navToggle.setAttribute("aria-label", open ? menuLabels[lang].close : menuLabels[lang].open);
+      }
+
+      window.getMenuLabel = function (open) {
+        var lang = document.documentElement.lang || "de";
+        return open ? menuLabels[lang].close : menuLabels[lang].open;
+      };
+
+      window.setSiteLanguage = function (lang, options) {
+        if (supported.indexOf(lang) === -1) lang = "de";
+        options = options || {};
+
+        translations.forEach(function (item) {
+          var value = item.html ? item.html[lang] : item.text[lang];
+          if (item.selector === "title") {
+            document.title = value;
+            return;
+          }
+          var nodes = item.all ? document.querySelectorAll(item.selector) : [document.querySelector(item.selector)];
+          nodes.forEach(function (node) {
+            if (!node) return;
+            if (item.attr) {
+              node.setAttribute(item.attr, value);
+            } else if (item.html) {
+              node.innerHTML = value;
+            } else {
+              node.textContent = value;
+            }
+          });
+        });
+
+        document.documentElement.lang = lang;
+        document.querySelectorAll(".language-toggle button").forEach(function (button) {
+          var active = button.getAttribute("data-lang") === lang;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+        updateMenuLabel(lang);
+
+        if (options.persist !== false) {
+          try { window.localStorage.setItem(storageKey, lang); } catch (error) {}
+        }
+        if (options.updateUrl !== false) updateUrl(lang);
+      };
+
+      document.querySelectorAll(".language-toggle button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          window.setSiteLanguage(button.getAttribute("data-lang"));
+        });
+      });
+
+      window.setSiteLanguage(getInitialLanguage(), { persist: false, updateUrl: false });
+    })();
+
     // Condense the sticky header once content starts scrolling underneath it.
     (function () {
       var header = document.querySelector(".site-header");
@@ -2246,7 +2521,7 @@
         header.classList.toggle("nav-open", open);
         if (navToggle) {
           navToggle.setAttribute("aria-expanded", String(open));
-          navToggle.setAttribute("aria-label", open ? "MenÃ¼ schlieÃŸen" : "MenÃ¼ Ã¶ffnen");
+          navToggle.setAttribute("aria-label", window.getMenuLabel ? window.getMenuLabel(open) : (open ? "Menü schließen" : "Menü öffnen"));
         }
       }
 
