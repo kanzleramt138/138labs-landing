@@ -274,6 +274,60 @@
       text-transform: uppercase;
     }
 
+    .nav-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--ink);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .nav-toggle:hover,
+    .nav-toggle:focus-visible {
+      outline: none;
+      border-color: rgba(66, 229, 155, 0.5);
+      background: rgba(66, 229, 155, 0.08);
+      box-shadow: 0 0 18px rgba(66, 229, 155, 0.16);
+    }
+
+    .nav-toggle-bars {
+      position: relative;
+      display: block;
+      width: 18px;
+      height: 12px;
+    }
+
+    .nav-toggle-bars::before,
+    .nav-toggle-bars::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform 180ms ease, top 180ms ease;
+    }
+
+    .nav-toggle-bars::before { top: 1px; }
+    .nav-toggle-bars::after { top: 9px; }
+
+    .site-header.nav-open .nav-toggle-bars::before {
+      top: 5px;
+      transform: rotate(45deg);
+    }
+
+    .site-header.nav-open .nav-toggle-bars::after {
+      top: 5px;
+      transform: rotate(-45deg);
+    }
+
     .site-nav {
       display: flex;
       flex-wrap: wrap;
@@ -1448,9 +1502,9 @@
 
       .site-header .shell {
         min-height: auto;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
         gap: 12px;
         padding-top: 12px;
         padding-bottom: 12px;
@@ -1468,7 +1522,7 @@
       }
 
       .brand img {
-        width: 96px;
+        width: 118px;
       }
 
       .brand small {
@@ -1477,43 +1531,70 @@
       }
 
       .site-header.is-condensed .brand img {
-        width: 72px;
+        width: 98px;
       }
 
-      .site-header.is-condensed .brand small {
-        display: none;
+      .nav-toggle {
+        display: inline-flex;
       }
 
       .site-nav {
+        grid-column: 1 / -1;
         width: 100%;
-        flex-wrap: nowrap;
-        gap: 14px;
-        overflow-x: auto;
-        padding-bottom: 2px;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2px;
+        max-height: 0;
+        overflow: hidden;
+        padding: 0;
+        border: 0 solid transparent;
+        border-radius: 18px;
+        background: rgba(8, 10, 18, 0);
+        opacity: 0;
+        transform: translateY(-4px);
+        transition:
+          max-height 220ms ease,
+          opacity 180ms ease,
+          transform 180ms ease,
+          padding 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease;
       }
 
-      .site-nav::-webkit-scrollbar {
-        display: none;
+      .site-header.nav-open .site-nav {
+        max-height: 320px;
+        padding: 8px;
+        border-width: 1px;
+        border-color: rgba(255, 255, 255, 0.08);
+        background: rgba(8, 10, 18, 0.88);
+        opacity: 1;
+        transform: translateY(0);
       }
 
       .site-nav a {
-        flex: 0 0 auto;
         font-size: 13px;
-        white-space: nowrap;
+        padding: 10px 12px;
+        border-radius: 12px;
+      }
+
+      .site-nav a:hover,
+      .site-nav a:focus-visible {
+        background: rgba(255, 255, 255, 0.045);
       }
 
       .site-header.is-condensed .site-nav {
-        gap: 12px;
+        gap: 2px;
       }
 
       .site-header.is-condensed .site-nav a {
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .nav-cta {
-        padding: 7px 12px;
+        display: inline-flex;
+        justify-content: center;
+        margin-top: 4px;
+        padding: 10px 14px !important;
       }
 
       .services-grid {
@@ -1640,7 +1721,7 @@
       }
 
       .hero-logo-wrap {
-        width: min(100%, 320px);
+        display: none;
       }
 
       .service-card {
@@ -1662,7 +1743,9 @@
       }
 
       .field-card summary h3 {
-        font-size: 25px;
+        font-size: 22px;
+        overflow-wrap: normal;
+        word-break: normal;
       }
 
       .field-toggle {
@@ -1698,7 +1781,10 @@
           <small>AI / Automation</small>
         </span>
       </a>
-      <nav class="site-nav" aria-label="Seitennavigation">
+      <button class="nav-toggle" type="button" aria-label="MenÃ¼ Ã¶ffnen" aria-expanded="false" aria-controls="site-nav">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Seitennavigation">
         <a href="#leistungen">Leistungen</a>
         <a href="#felder">Themen</a>
         <a href="#arbeitsweise">Arbeitsweise</a>
@@ -2106,11 +2192,34 @@
       var header = document.querySelector(".site-header");
       if (!header) return;
 
+      var navToggle = header.querySelector(".nav-toggle");
+      var navLinks = header.querySelectorAll(".site-nav a");
       var ticking = false;
+
+      function setMenu(open) {
+        header.classList.toggle("nav-open", open);
+        if (navToggle) {
+          navToggle.setAttribute("aria-expanded", String(open));
+          navToggle.setAttribute("aria-label", open ? "MenÃ¼ schlieÃŸen" : "MenÃ¼ Ã¶ffnen");
+        }
+      }
+
       function updateHeader() {
         header.classList.toggle("is-condensed", window.scrollY > 24);
         ticking = false;
       }
+
+      if (navToggle) {
+        navToggle.addEventListener("click", function () {
+          setMenu(!header.classList.contains("nav-open"));
+        });
+      }
+
+      navLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+          setMenu(false);
+        });
+      });
 
       updateHeader();
       window.addEventListener("scroll", function () {
