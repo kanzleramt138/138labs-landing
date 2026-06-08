@@ -60,7 +60,8 @@ Fund:
 Datenschutzrelevanz:
 
 - Beim Abruf der Website werden technisch notwendige Zugriffsdaten verarbeitet.
-- Die konkrete Log-Konfiguration und Speicherdauer von Nginx/Traefik/Coolify ist nicht im Website-Repo dokumentiert.
+- Die Nginx-Access-Logs sind im Repo auf ein minimiertes Format ohne IP-Adresse, Referrer, User-Agent und Query-String umgestellt.
+- Die Docker-Containerlogs werden groessenbasiert rotiert; eine feste zeitliche Retention ist nicht definiert.
 
 ### Lokale Assets und Fonts
 
@@ -174,12 +175,13 @@ Bewertung:
 ### 1. Bereitstellung der Website / Server-Logfiles
 
 - Zweck: Auslieferung der Website, technische Stabilitaet, Sicherheit, Fehleranalyse.
-- Datenkategorien: IP-Adresse, Datum/Uhrzeit, URL, Referrer, User-Agent, Statuscode, uebertragene Datenmenge; konkrete Logfelder offen.
+- Datenkategorien im minimierten Nginx-Access-Log nach Deployment: Datum/Uhrzeit, HTTP-Methode, URI/Pfad ohne Query-String, Protokoll, Statuscode, uebertragene Datenmenge.
+- Datenkategorien auf vorgelagerten Infrastruktur-Ebenen: IP-Adresse und technische Request-Daten koennen durch Traefik, Cloudflare oder Hostingbetrieb fuer Routing, TLS, Sicherheit und Missbrauchsschutz verarbeitet werden.
 - Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
 - Berechtigtes Interesse: sichere und stabile Bereitstellung der Website.
 - Empfaenger: Server-/Hostingbetrieb, ggf. Coolify/Traefik/Nginx, ggf. Hostinganbieter.
 - Drittlandtransfer: offen; abhaengig vom Hostinganbieter und Cloudflare-Nutzung.
-- Speicherdauer: offen; muss anhand Server-/Proxy-Konfiguration festgelegt werden.
+- Speicherdauer: Docker-Containerlogs werden groessenbasiert rotiert (`max-size=10m`, `max-file=3`); Cloudflare-/Proxy-Retention offen.
 - Pflicht zur Bereitstellung: technisch erforderlich fuer Websiteabruf.
 - Profiling: nicht erkennbar.
 

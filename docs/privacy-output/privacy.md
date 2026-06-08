@@ -18,9 +18,9 @@ Telefon: +49 157 79226766
 
 ## 2. Datenschutzbeauftragter
 
-Ein Datenschutzbeauftragter ist derzeit nicht in der Website genannt.
+Ein Datenschutzbeauftragter ist nicht benannt.
 
-Offen: Es ist rechtlich zu pruefen, ob fuer 138Labs eine Pflicht zur Benennung eines Datenschutzbeauftragten besteht. Wenn ein Datenschutzbeauftragter benannt wird, sind dessen Kontaktdaten hier zu ergaenzen.
+Nach aktueller Selbsteinschaetzung besteht fuer 138Labs derzeit keine Pflicht zur Benennung eines Datenschutzbeauftragten. Diese Einschaetzung ist erneut zu pruefen, wenn sich Umfang, Art oder Organisation der Datenverarbeitung wesentlich aendern, insbesondere bei regelmaessiger umfangreicher Verarbeitung personenbezogener Daten, besonderer Kategorien personenbezogener Daten oder bei wachsender Mitarbeiterzahl.
 
 ## 3. Allgemeine Hinweise
 
@@ -30,7 +30,7 @@ Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte
 
 ## 4. Hosting und Bereitstellung der Website
 
-Diese Website wird als statische Website ueber einen Server mit Nginx, Docker/Coolify und Traefik bereitgestellt.
+Diese Website wird als statische Website auf einem VPS bei Hetzner betrieben. Der Serverstandort ist nach aktueller Angabe Falkenstein, Deutschland. Die technische Bereitstellung erfolgt ueber Nginx, Docker/Coolify und Traefik.
 
 Beim Aufruf der Website werden technisch notwendige Daten verarbeitet, damit die Website an Ihr Endgeraet ausgeliefert werden kann.
 
@@ -43,13 +43,14 @@ Zweck der Verarbeitung:
 
 Kategorien personenbezogener Daten:
 
-- IP-Adresse
 - Datum und Uhrzeit des Abrufs
-- aufgerufene URL
-- Referrer-URL, sofern vom Browser uebermittelt
-- Browsertyp und Betriebssystem
+- aufgerufener Pfad bzw. URI
+- HTTP-Methode
+- HTTP-Protokoll
 - HTTP-Statuscode
 - uebertragene Datenmenge
+
+Die Nginx-Access-Logs der Website sind im Repo auf ein minimiertes Format ohne IP-Adresse, Referrer, User-Agent und Query-String konfiguriert. Diese minimierte Konfiguration wird nach Rebuild und Deployment des Coolify-Containers wirksam. Auf vorgelagerten technischen Ebenen, insbesondere bei Traefik, Cloudflare oder dem Hostingbetrieb, koennen IP-Adressen und technische Request-Daten weiterhin zur Auslieferung, Absicherung und Fehleranalyse verarbeitet werden.
 
 Rechtsgrundlage:
 
@@ -58,16 +59,16 @@ Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser ber
 Empfaenger:
 
 - interne technische Administration
-- Hosting-/Serveranbieter: offen, bitte final ergaenzen
+- Hosting-/Serveranbieter: Hetzner Online GmbH
 - eingesetzte Infrastrukturkomponenten wie Nginx, Traefik und Coolify
 
 Drittlanduebermittlung:
 
-Offen. Eine Drittlanduebermittlung haengt vom Hostinganbieter und von der Cloudflare-Konfiguration ab.
+Der Serverstandort liegt nach aktueller Angabe in Deutschland. Eine Drittlanduebermittlung durch den Serverbetrieb ist danach nicht ersichtlich. Eine Drittlanduebermittlung kann jedoch im Zusammenhang mit Cloudflare nicht ausgeschlossen werden.
 
 Speicherdauer:
 
-Die konkrete Speicherdauer der Server- und Proxy-Logfiles ist noch zu pruefen. Logfiles sollten nur so lange gespeichert werden, wie dies fuer Sicherheit, Fehleranalyse und Missbrauchsaufklaerung erforderlich ist.
+Container-Logs werden nach aktuellem technischen Stand groessenbasiert rotiert. Pro Docker-Container werden maximal drei Logdateien mit jeweils maximal 10 MB vorgehalten. Eine feste zeitliche Speicherdauer ist dadurch nicht garantiert. Logfiles sollten nur so lange gespeichert werden, wie dies fuer Sicherheit, Fehleranalyse und Missbrauchsaufklaerung erforderlich ist.
 
 Pflicht zur Bereitstellung:
 
@@ -79,7 +80,7 @@ Eine automatisierte Entscheidungsfindung oder ein Profiling durch 138Labs findet
 
 ## 5. Cloudflare
 
-Nach der aktuellen Infrastruktur-Dokumentation wird `138labs.de` ueber Cloudflare bereitgestellt bzw. durch Cloudflare proxied. Cloudflare kann dabei technische Zugriffsdaten verarbeiten, um die Website auszuliefern, zu beschleunigen und vor Missbrauch zu schuetzen.
+Nach der aktuellen Cloudflare-DNS-Konfiguration werden `138labs.de` und `www.138labs.de` ueber Cloudflare proxied. Cloudflare kann dabei technische Zugriffsdaten verarbeiten, um die Website auszuliefern, zu beschleunigen und vor Missbrauch zu schuetzen.
 
 Anbieter:
 
@@ -95,6 +96,9 @@ Zweck der Verarbeitung:
 - Performance-Optimierung
 - Schutz vor Angriffen und Missbrauch
 - Routing von Website-Anfragen
+- DDoS-Schutz
+- Bot- und Missbrauchserkennung
+- Schutz vor automatisiertem Auslesen oeffentlich sichtbarer E-Mail-Adressen
 
 Kategorien personenbezogener Daten:
 
@@ -104,6 +108,18 @@ Kategorien personenbezogener Daten:
 - Browser- und Geraeteinformationen
 - Sicherheitsereignisse
 - ggf. Cloudflare-spezifische technische Cookies oder IDs, sofern durch aktivierte Cloudflare-Funktionen gesetzt
+
+Nach aktueller Dashboard-Pruefung sind insbesondere folgende Cloudflare-Funktionen aktiv oder relevant:
+
+- Proxy/CDN fuer `138labs.de` und `www.138labs.de`
+- automatische SSL/TLS- und HTTP-DDoS-Schutzmechanismen
+- Cloudflare Managed Ruleset
+- Block AI Bots
+- Browser Integrity Check
+- Email Address Obfuscation
+- Challenge Passage mit 30 Minuten
+
+Nach aktueller Dashboard-Pruefung sind keine eigenen Custom Security Rules, keine Rate-Limiting-Regeln, keine aktiven eigenen Managed-WAF-Regeln, kein Bot Fight Mode, kein AI Labyrinth, kein Continuous Script Monitoring und kein Hotlink Protection aktiviert.
 
 Rechtsgrundlage:
 
@@ -147,12 +163,14 @@ Zweck der Verarbeitung:
 
 Kategorien personenbezogener Daten:
 
-- IP-Adresse
 - Zeitpunkt des Abrufs
-- angeforderte Datei oder URL
+- HTTP-Methode
+- angeforderter Pfad bzw. URI ohne Query-String
+- HTTP-Protokoll
 - Statuscode
-- Referrer
-- User-Agent
+- Antwortgroesse
+
+Nach dem im Repo dokumentierten Zielstand werden in den Nginx-Access-Logs der Website keine IP-Adressen, Referrer, User-Agents oder Query-Strings gespeichert. Diese Konfiguration wird nach Rebuild und Deployment des Coolify-Containers wirksam. IP-Adressen koennen aber auf vorgelagerten technischen Ebenen, insbesondere durch Traefik, Cloudflare oder den Hostingbetrieb, fuer Routing, TLS, Sicherheit und Missbrauchsschutz verarbeitet werden.
 
 Rechtsgrundlage:
 
@@ -165,11 +183,11 @@ Empfaenger:
 
 Drittlanduebermittlung:
 
-Offen, abhaengig von Hostinganbieter und Cloudflare-Einsatz.
+Der Serverstandort liegt nach aktueller Angabe in Deutschland. Eine Drittlanduebermittlung durch die serverseitigen Nginx-/Docker-Logs ist danach nicht ersichtlich. Cloudflare wird hiervon getrennt betrachtet.
 
 Speicherdauer:
 
-Offen. Die tatsaechliche Speicherdauer der Logfiles muss technisch final geprueft und hier ergaenzt werden.
+Container-Logs werden nach aktuellem technischen Stand groessenbasiert rotiert. Pro Docker-Container werden maximal drei Logdateien mit jeweils maximal 10 MB vorgehalten. Eine feste zeitliche Speicherdauer, zum Beispiel eine bestimmte Anzahl von Tagen, ist dadurch nicht garantiert; die tatsaechliche Dauer haengt vom Logvolumen ab.
 
 Pflicht zur Bereitstellung:
 
@@ -212,11 +230,12 @@ Wenn Ihre Anfrage auf den Abschluss oder die Durchfuehrung eines Vertrags gerich
 Empfaenger:
 
 - 138Labs / Robert Hormann
-- E-Mail- und Telekommunikationsanbieter: offen, bitte final ergaenzen
+- E-Mail-Anbieter: IONOS SE
+- Telekommunikationsanbieter: offen, bitte final ergaenzen
 
 Drittlanduebermittlung:
 
-Offen. Dies haengt vom eingesetzten E-Mail- und Telekommunikationsanbieter ab.
+Offen. Dies haengt von den eingesetzten E-Mail- und Telekommunikationsanbietern sowie deren Vertrags- und Infrastrukturkonfiguration ab.
 
 Speicherdauer:
 
@@ -359,7 +378,7 @@ Soweit in dieser Datenschutzerklaerung keine konkrete Speicherdauer genannt ist,
 
 Darueber hinaus speichern wir Daten, wenn gesetzliche Aufbewahrungspflichten bestehen oder wir ein berechtigtes Interesse an der weiteren Speicherung haben, etwa zur Geltendmachung, Ausuebung oder Verteidigung von Rechtsanspruechen.
 
-Offen: Die konkrete Speicherdauer fuer Server-/Proxy-Logfiles und E-Mail-Kommunikation muss final technisch und organisatorisch festgelegt werden.
+Offen: Die konkrete Speicherdauer fuer Cloudflare-Logs und E-Mail-Kommunikation muss final technisch und organisatorisch festgelegt werden. Fuer Docker-Containerlogs ist aktuell eine groessenbasierte Rotation dokumentiert.
 
 ## 20. Betroffenenrechte
 
