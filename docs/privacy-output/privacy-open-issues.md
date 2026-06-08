@@ -17,13 +17,14 @@ Diese Punkte sollten geklaert sein, bevor auf der Website eine Aussage wie "DSGV
 
 ### 2. Nginx, Traefik, Coolify und Logfiles
 
-- Pruefen, ob Access-Logs in Nginx, Traefik und Coolify aktiv sind.
-- Pruefen, welche Datenfelder gespeichert werden, insbesondere IP-Adresse, Zeitstempel, URL, User-Agent, Referrer und Statuscode.
-- Feste Log-Retention definieren, zum Beispiel 7, 14 oder 30 Tage fuer normale Zugrifflogs.
+- Nginx-Access-Logs sind im Repo auf ein minimiertes Format ohne IP-Adresse, Referrer, User-Agent und Query-String umgestellt.
+- Traefik-Access-Logs sind nach aktuellem Server-Audit nicht explizit aktiviert.
+- Docker-Logs werden groessenbasiert rotiert: `max-size=10m`, `max-file=3`.
+- Offen bleibt eine echte zeitbasierte Log-Retention, zum Beispiel 7, 14 oder 30 Tage fuer normale Zugrifflogs.
 - Laengere Speicherung nur fuer konkrete Sicherheitsvorfaelle oder Missbrauchsaufklaerung vorsehen.
-- Debug-Logs nicht dauerhaft aktiv lassen.
+- Debug-Logs sind nach aktuellem Server-Audit nicht erkennbar aktiv und sollten nicht dauerhaft aktiviert werden.
 - Zugriff auf Logs auf notwendige Personen und Admin-Zugaenge beschraenken.
-- Automatische Rotation und Loeschung technisch einrichten oder dokumentieren.
+- Groessenbasierte automatische Rotation ist dokumentiert; zeitbasierte Loeschung waere bei Bedarf zusaetzlich technisch umzusetzen.
 
 ### 3. Cloudflare
 
@@ -76,15 +77,15 @@ Warum relevant:
 
 Offen:
 
-- Welche Logs werden durch Nginx, Traefik, Coolify und ggf. Cloudflare tatsaechlich gespeichert?
-- Welche konkreten Datenfelder werden gespeichert?
-- Wie lange werden Logs aufbewahrt?
-- Gibt es automatische Rotation oder Loeschung?
+- Cloudflare-Logs und aktivierte Cloudflare-Features muessen noch im Cloudflare-Dashboard geprueft werden.
+- Eine feste zeitliche Aufbewahrungsfrist fuer Docker-/Nginx-Logs ist nicht definiert.
+- Die tatsaechliche Dauer der Speicherung haengt wegen groessenbasierter Docker-Rotation vom Logvolumen ab.
 
 Empfehlung:
 
-- Log-Konfiguration pruefen.
-- Eine feste Speicherdauer definieren, zum Beispiel eine kurze Frist fuer normale Zugrifflogs und laengere Speicherung nur bei Sicherheitsvorfaellen.
+- Nginx-Minimierung nach Deployment verifizieren.
+- Falls eine feste Speicherdauer benoetigt wird, zeitbasierte Loeschung technisch umsetzen oder einen dokumentierten Betriebsprozess definieren.
+- Cloudflare-Logging und Cloudflare-Analytics separat pruefen.
 
 ### Cloudflare-Konfiguration
 
@@ -224,11 +225,11 @@ Offen.
 
 Risiko:
 
-- Datenschutzerklaerung bleibt unvollstaendig, wenn keine Speicherdauer oder Kriterien genannt werden.
+- Eine feste Tagesfrist kann nicht belastbar genannt werden, solange nur die groessenbasierte Docker-Rotation belegt ist.
 
 Empfehlung:
 
-- Technische Log-Retention festlegen und dokumentieren.
+- In der Datenschutzerklaerung die groessenbasierte Rotation nennen oder eine echte zeitbasierte Retention technisch umsetzen und dokumentieren.
 
 ### Cloudflare nicht voll dokumentiert
 
@@ -288,7 +289,7 @@ Empfehlung:
 
 1. Hostinganbieter und AVV final klaeren.
 2. Cloudflare-DPA, SCC und aktivierte Features pruefen.
-3. Log-Retention technisch festlegen und dokumentieren.
+3. Nginx-Log-Minimierung nach Deployment verifizieren und Cloudflare-Logging pruefen.
 4. Datenschutzerklaerung erst nach Ergaenzung der offenen Anbieterangaben live stellen.
 5. Footer-Link von `impressum.html#datenschutz` auf die finale Datenschutzseite aendern.
 6. Aussage "DSGVO-konform" fachlich absichern oder vorsichtiger formulieren.

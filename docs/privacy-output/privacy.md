@@ -43,13 +43,12 @@ Zweck der Verarbeitung:
 
 Kategorien personenbezogener Daten:
 
-- IP-Adresse
 - Datum und Uhrzeit des Abrufs
-- aufgerufene URL
-- Referrer-URL, sofern vom Browser uebermittelt
-- Browsertyp und Betriebssystem
+- aufgerufener Pfad bzw. URI
 - HTTP-Statuscode
 - uebertragene Datenmenge
+
+Die Nginx-Access-Logs der Website sind im Repo auf ein minimiertes Format ohne IP-Adresse, Referrer, User-Agent und Query-String konfiguriert. Auf vorgelagerten technischen Ebenen, insbesondere bei Traefik, Cloudflare oder dem Hostingbetrieb, koennen IP-Adressen und technische Request-Daten weiterhin zur Auslieferung, Absicherung und Fehleranalyse verarbeitet werden.
 
 Rechtsgrundlage:
 
@@ -67,7 +66,7 @@ Offen. Eine Drittlanduebermittlung haengt vom Hostinganbieter und von der Cloudf
 
 Speicherdauer:
 
-Die konkrete Speicherdauer der Server- und Proxy-Logfiles ist noch zu pruefen. Logfiles sollten nur so lange gespeichert werden, wie dies fuer Sicherheit, Fehleranalyse und Missbrauchsaufklaerung erforderlich ist.
+Container-Logs werden nach aktuellem technischen Stand groessenbasiert rotiert. Pro Docker-Container werden maximal drei Logdateien mit jeweils maximal 10 MB vorgehalten. Eine feste zeitliche Speicherdauer ist dadurch nicht garantiert. Logfiles sollten nur so lange gespeichert werden, wie dies fuer Sicherheit, Fehleranalyse und Missbrauchsaufklaerung erforderlich ist.
 
 Pflicht zur Bereitstellung:
 
@@ -147,12 +146,14 @@ Zweck der Verarbeitung:
 
 Kategorien personenbezogener Daten:
 
-- IP-Adresse
 - Zeitpunkt des Abrufs
-- angeforderte Datei oder URL
+- HTTP-Methode
+- angeforderter Pfad bzw. URI ohne Query-String
+- HTTP-Protokoll
 - Statuscode
-- Referrer
-- User-Agent
+- Antwortgroesse
+
+Nach dem im Repo dokumentierten Zielstand werden in den Nginx-Access-Logs der Website keine IP-Adressen, Referrer, User-Agents oder Query-Strings gespeichert. IP-Adressen koennen aber auf vorgelagerten technischen Ebenen, insbesondere durch Traefik, Cloudflare oder den Hostingbetrieb, fuer Routing, TLS, Sicherheit und Missbrauchsschutz verarbeitet werden.
 
 Rechtsgrundlage:
 
@@ -169,7 +170,7 @@ Offen, abhaengig von Hostinganbieter und Cloudflare-Einsatz.
 
 Speicherdauer:
 
-Offen. Die tatsaechliche Speicherdauer der Logfiles muss technisch final geprueft und hier ergaenzt werden.
+Container-Logs werden nach aktuellem technischen Stand groessenbasiert rotiert. Pro Docker-Container werden maximal drei Logdateien mit jeweils maximal 10 MB vorgehalten. Eine feste zeitliche Speicherdauer, zum Beispiel eine bestimmte Anzahl von Tagen, ist dadurch nicht garantiert; die tatsaechliche Dauer haengt vom Logvolumen ab.
 
 Pflicht zur Bereitstellung:
 
@@ -359,7 +360,7 @@ Soweit in dieser Datenschutzerklaerung keine konkrete Speicherdauer genannt ist,
 
 Darueber hinaus speichern wir Daten, wenn gesetzliche Aufbewahrungspflichten bestehen oder wir ein berechtigtes Interesse an der weiteren Speicherung haben, etwa zur Geltendmachung, Ausuebung oder Verteidigung von Rechtsanspruechen.
 
-Offen: Die konkrete Speicherdauer fuer Server-/Proxy-Logfiles und E-Mail-Kommunikation muss final technisch und organisatorisch festgelegt werden.
+Offen: Die konkrete Speicherdauer fuer Cloudflare-/Proxy-Logs sowie fuer E-Mail-Kommunikation muss final technisch und organisatorisch festgelegt werden. Fuer Docker-Containerlogs ist aktuell eine groessenbasierte Rotation dokumentiert.
 
 ## 20. Betroffenenrechte
 
