@@ -13,81 +13,54 @@
   <style>
     :root {
       --bg: #05060d;
-      --panel: #0b0f1a;
       --text: #f5f7fb;
+      --ink: #f5f7fb;
+      --ink-soft: #c8cedb;
       --muted: #b8becd;
       --line: #24283a;
       --green: #42e59b;
+      --violet: #7c4dff;
+      --max: 1200px;
+      --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        linear-gradient(145deg, rgba(66, 229, 155, 0.08), transparent 30%),
+        linear-gradient(145deg, rgba(66, 229, 155, 0.1), transparent 30%),
+        linear-gradient(315deg, rgba(124, 77, 255, 0.14), transparent 34%),
         var(--bg);
       color: var(--text);
       min-height: 100vh;
     }
 
     main {
-      width: min(100%, 980px);
-      padding: clamp(32px, 6vw, 72px) 24px 72px;
+      width: min(100%, 920px);
+      padding: clamp(32px, 6vw, 72px) 24px;
       margin: 0 auto;
     }
 
-    .topbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 40px;
-    }
-
-    .brand-link {
+    .back {
       display: inline-flex;
-      align-items: center;
-      gap: 14px;
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .brand-link img {
-      width: 48px;
-      height: 48px;
-    }
-
-    .top-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .top-links a,
-    .back-link {
       color: var(--green);
-      text-decoration: none;
-      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      text-decoration: none;
+      font-size: 13px;
+      margin-bottom: clamp(36px, 6vw, 64px);
     }
 
     h1 {
-      font-size: clamp(42px, 8vw, 72px);
-      line-height: 0.98;
-      margin: 0 0 16px;
-      letter-spacing: -0.02em;
+      font-size: clamp(42px, 8vw, 82px);
+      line-height: 0.95;
+      margin: 0 0 32px;
+      letter-spacing: 0;
     }
 
     .stand {
@@ -102,8 +75,8 @@
     }
 
     h2 {
-      font-size: clamp(24px, 3vw, 32px);
-      margin: 0 0 18px;
+      font-size: clamp(22px, 3vw, 30px);
+      margin: 0 0 16px;
     }
 
     h3 {
@@ -114,8 +87,9 @@
     p,
     li {
       color: var(--muted);
-      font-size: 17px;
-      line-height: 1.7;
+      font-size: 18px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
     }
 
     p {
@@ -131,25 +105,127 @@
       font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
       font-size: 0.92em;
       color: var(--text);
+      overflow-wrap: anywhere;
     }
 
     a {
       color: var(--green);
+      overflow-wrap: anywhere;
+    }
+    .shell {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .site-footer {
+      padding: 56px 0 32px;
+      border-top: 1px solid var(--line);
+      background: rgba(5, 6, 13, 0.92);
+      color: var(--muted);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+    .footer-grid h4 {
+      margin: 0 0 16px;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .footer-grid ul {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .footer-grid a {
+      color: var(--ink-soft);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+    .footer-grid a:hover,
+    .footer-legal a:hover {
+      color: var(--green);
+    }
+    .footer-brand .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .footer-brand .brand img {
+      width: 42px;
+      height: auto;
+    }
+    .brand-text small {
+      display: block;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .footer-brand p {
+      margin: 12px 0 0;
+      max-width: 32ch;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .footer-legal {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .footer-legal a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      margin-left: 18px;
+    }
+    @media (max-width: 920px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+      }
+    }
+    @media (max-width: 700px) {
+      .shell {
+        width: min(calc(100% - 28px), var(--max));
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-legal {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .footer-legal a {
+        margin-left: 0;
+        margin-right: 18px;
+      }
+      h1 {
+        font-size: 32px;
+      }
     }
   </style>
 </head>
 <body>
   <main>
-    <div class="topbar">
-      <a class="brand-link" href="index.html">
-        <img src="logo.svg" alt="138Labs logo" width="48" height="48" />
-        <span>138Labs</span>
-      </a>
-      <div class="top-links">
-        <a href="index.html">Startseite</a>
-        <a href="impressum.html">Impressum</a>
-      </div>
-    </div>
+    <a class="back" href="index.html"><img src="logo.svg" alt="138Labs logo" width="138" height="138" /></a>
 
     <h1>Datenschutzerklärung</h1>
     <p class="stand">Stand: 2026-06-09</p>
@@ -711,5 +787,52 @@
       </p>
     </section>
   </main>
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="index.html">
+            <img src="logo-transparent-360.png" alt="" />
+            <span class="brand-text"><small>AI / Automation</small></span>
+          </a>
+          <p>KI-Prototypen,<br> Automatisierungen<br> und Workshops.</p>
+        </div>
+        <div>
+          <h4>Leistungen</h4>
+          <ul>
+            <li><a href="index.html#leistungen">KI-Workshops</a></li>
+            <li><a href="index.html#leistungen">Automatisierungsanalyse</a></li>
+            <li><a href="index.html#leistungen">KI-Prototyping</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Themen</h4>
+          <ul>
+            <li><a href="index.html#felder">Dokumente</a></li>
+            <li><a href="index.html#felder">Wissen</a></li>
+            <li><a href="index.html#felder">Assistenten</a></li>
+            <li><a href="index.html#felder">Prozesse</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Kontakt</h4>
+          <ul>
+            <li><a href="mailto:robert@138labs.de">robert@138labs.de</a></li>
+            <li><a href="https://de.linkedin.com/in/robert-hormann-76a15621b" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-legal">
+        <span>© <span id="year">2026</span> 138Labs · Robert Hormann · Aachen</span>
+        <div>
+          <a href="impressum.html">Impressum</a>
+          <a href="datenschutz.html">Datenschutz</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
