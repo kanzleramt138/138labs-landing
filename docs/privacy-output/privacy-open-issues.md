@@ -28,10 +28,10 @@ Diese Punkte sollten geklaert sein, bevor auf der Website eine Aussage wie "DSGV
 
 ### 3. Cloudflare
 
-- Klaeren, ob Cloudflare Proxy/CDN/Security fuer `138labs.de` dauerhaft aktiv ist.
-- Cloudflare Data Processing Addendum pruefen bzw. abschliessen.
-- SCC bzw. Drittlandtransfermechanismus dokumentieren.
-- Aktivierte Cloudflare-Features pruefen: CDN, WAF, Bot Fight Mode, Turnstile, Analytics, Logs, Zaraz.
+- Cloudflare Proxy/CDN/Security fuer `138labs.de` ist produktiv aktiv.
+- Cloudflare Data Processing Addendum wurde heruntergeladen und dokumentiert.
+- Die SCC sind im Cloudflare-DPA enthalten bzw. dort ausdruecklich referenziert.
+- Aktivierte Cloudflare-Features wurden technisch geprueft: Proxy/CDN, automatische DDoS-Schutzmechanismen, Cloudflare Managed Ruleset, Block AI Bots, Browser Integrity Check, Email Address Obfuscation, Challenge Passage.
 - Nicht benoetigte Features deaktivieren.
 - Pruefen, ob Cloudflare Cookies oder sonstige Identifikatoren fuer diese Domain setzt.
 - Falls Cloudflare Cookies/IDs oder Analytics-Features aktiv sind, Einwilligungsbedarf gesondert pruefen.
@@ -89,13 +89,14 @@ Empfehlung:
 
 ### Cloudflare-Konfiguration
 
-Offen:
+Teilweise geklaert:
 
-- Ist Cloudflare Proxy fuer `138labs.de` produktiv dauerhaft aktiviert?
-- Welche Cloudflare-Features sind aktiv? Beispiel: CDN, WAF, Bot Fight Mode, Turnstile, Analytics, Logs, Zaraz.
-- Setzt Cloudflare fuer diese Domain Cookies oder andere Identifikatoren?
-- Ist das Cloudflare Data Processing Addendum abgeschlossen?
-- Welche Garantien werden fuer Drittlanduebermittlungen genutzt?
+- Cloudflare Proxy fuer `138labs.de` ist produktiv aktiv.
+- Die aktiven Cloudflare-Features wurden im Dashboard geprueft und dokumentiert.
+- Das Cloudflare Data Processing Addendum wurde heruntergeladen und dokumentiert.
+- Die SCC sind im Cloudflare-DPA enthalten bzw. dort referenziert.
+- Offen bleibt, ob fuer diese konkrete Domain zusaetzliche Cloudflare-Cookies, IDs oder Retention-Einstellungen relevant sind.
+- Offen bleibt die interne Dokumentation des praktisch genutzten Transfermechanismus.
 
 Risiko:
 
@@ -104,9 +105,8 @@ Risiko:
 
 Empfehlung:
 
-- Cloudflare-DPA und SCC/Transfermechanismus pruefen.
 - Nur notwendige Cloudflare-Features aktivieren.
-- Cloudflare-spezifische Cookies/Features vor Livegang der Datenschutzerklaerung pruefen.
+- Cloudflare-spezifische Cookies/Features und Retention vor Livegang der Datenschutzerklaerung final pruefen.
 
 ### E-Mail- und Telefonanbieter
 
@@ -287,10 +287,10 @@ Empfehlung:
 
 ## Empfehlungen zur Verbesserung der Compliance
 
-1. Cloudflare-DPA, SCC und aktivierte Features pruefen.
-2. IONOS-/Telefonanbieter, AVV und Speicherkonzept fuer Kontaktanfragen klaeren.
+1. Cloudflare-Logs, Retention und etwaige Cookies/IDs final pruefen.
+2. IONOS-/Vodafone-Unterlagen und Speicherkonzept fuer Kontaktanfragen intern dokumentieren.
 3. Nginx-Log-Minimierung nach Deployment verifizieren und Cloudflare-Logging pruefen.
-4. Datenschutzerklaerung erst nach Ergaenzung der offenen Anbieterangaben live stellen.
+4. Datenschutzerklaerung erst nach Ergaenzung der verbleibenden organisatorischen Angaben live stellen.
 5. Footer-Link von `impressum.html#datenschutz` auf die finale Datenschutzseite aendern.
 6. Aussage "DSGVO-konform" fachlich absichern oder vorsichtiger formulieren.
 7. Vor Einfuehrung von Analytics, Kontaktformularen, Buchungstools oder Newslettern eine neue Datenschutzpruefung durchfuehren.

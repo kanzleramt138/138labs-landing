@@ -131,7 +131,7 @@ Cloudflare und ggf. mit Cloudflare verbundene Unterauftragsverarbeiter.
 
 Drittlanduebermittlung:
 
-Eine Uebermittlung in Drittlaender, insbesondere die USA, kann nicht ausgeschlossen werden. Cloudflare stellt nach eigenen Angaben ein Data Processing Addendum und Standardvertragsklauseln bereit. Die konkrete vertragliche Einbindung ist final zu pruefen.
+Eine Uebermittlung in Drittlaender, insbesondere die USA, kann nicht ausgeschlossen werden. Das Cloudflare Data Processing Addendum wurde heruntergeladen und dokumentiert. Die Standardvertragsklauseln (SCC) sind im Cloudflare-DPA enthalten bzw. dort ausdruecklich referenziert. Offene Punkte betreffen vor allem die praktische Retention sowie die konkrete operative Cloudflare-Konfiguration.
 
 Speicherdauer:
 
@@ -231,11 +231,11 @@ Empfaenger:
 
 - 138Labs / Robert Hormann
 - E-Mail-Anbieter: IONOS SE
-- Telekommunikationsanbieter: offen, bitte final ergaenzen
+- Telekommunikationsanbieter: Vodafone GmbH
 
 Drittlanduebermittlung:
 
-Offen. Dies haengt von den eingesetzten E-Mail- und Telekommunikationsanbietern sowie deren Vertrags- und Infrastrukturkonfiguration ab.
+Offen. Dies haengt von den eingesetzten E-Mail- und Telekommunikationsanbietern sowie deren Vertrags- und Infrastrukturkonfiguration ab. Fuer IONOS und Vodafone sollten die jeweils einschlaegigen Datenschutz- und Vertragsunterlagen intern dokumentiert werden.
 
 Speicherdauer:
 
