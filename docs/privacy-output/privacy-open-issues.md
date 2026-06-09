@@ -10,10 +10,10 @@ Diese Punkte sollten geklaert sein, bevor auf der Website eine Aussage wie "DSGV
 
 ### 1. Hosting und Serverbetrieb
 
-- Hostinganbieter bzw. Serveranbieter eindeutig benennen.
-- Land/Rechenzentrum des Serverbetriebs klaeren.
-- Auftragsverarbeitungsvertrag mit dem Hostinganbieter pruefen bzw. abschliessen.
-- Empfaenger, Drittlandtransfer und Speicherdauer in der Datenschutzerklaerung finalisieren.
+- Hostinganbieter bzw. Serveranbieter ist benannt: Hetzner Online GmbH.
+- Land/Rechenzentrum des Serverbetriebs ist benannt: Falkenstein, Deutschland.
+- Auftragsverarbeitungsvertrag mit Hetzner wurde erstellt.
+- Empfaenger, Drittlandtransfer und Speicherdauer sind in der Datenschutzerklaerung fuer den Serverbetrieb konkretisiert.
 
 ### 2. Nginx, Traefik, Coolify und Logfiles
 
@@ -63,11 +63,11 @@ Diese Punkte sollten geklaert sein, bevor auf der Website eine Aussage wie "DSGV
 
 ### Hostinganbieter
 
-Offen:
+Geklaert:
 
-- Welcher konkrete Hostinganbieter bzw. Serveranbieter wird fuer `138labs.de` eingesetzt?
-- Besteht ein Auftragsverarbeitungsvertrag mit dem Hostinganbieter?
-- In welchem Land bzw. Rechenzentrum wird der Server betrieben?
+- Hostinganbieter bzw. Serveranbieter fuer `138labs.de`: Hetzner Online GmbH.
+- Auftragsverarbeitungsvertrag mit Hetzner: erstellt.
+- Serverstandort: Falkenstein, Deutschland.
 
 Warum relevant:
 
@@ -123,11 +123,11 @@ Warum relevant:
 
 ### Datenschutzbeauftragter
 
-Offen:
+Geklaert:
 
-- Besteht eine Pflicht zur Benennung eines Datenschutzbeauftragten?
-- Falls ja: Kontaktdaten ergaenzen.
-- Falls nein: Formulierung in der Datenschutzerklaerung entsprechend finalisieren.
+- Ein Datenschutzbeauftragter ist nicht benannt.
+- Nach aktueller Selbsteinschaetzung besteht derzeit keine Pflicht zur Benennung.
+- Diese Einschaetzung ist bei wesentlichen Aenderungen von Umfang, Art oder Organisation der Datenverarbeitung erneut zu pruefen.
 
 ## Rechtliche Unsicherheiten
 
@@ -287,8 +287,8 @@ Empfehlung:
 
 ## Empfehlungen zur Verbesserung der Compliance
 
-1. Hostinganbieter und AVV final klaeren.
-2. Cloudflare-DPA, SCC und aktivierte Features pruefen.
+1. Cloudflare-DPA, SCC und aktivierte Features pruefen.
+2. IONOS-/Telefonanbieter, AVV und Speicherkonzept fuer Kontaktanfragen klaeren.
 3. Nginx-Log-Minimierung nach Deployment verifizieren und Cloudflare-Logging pruefen.
 4. Datenschutzerklaerung erst nach Ergaenzung der offenen Anbieterangaben live stellen.
 5. Footer-Link von `impressum.html#datenschutz` auf die finale Datenschutzseite aendern.
