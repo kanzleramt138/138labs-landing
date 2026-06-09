@@ -96,16 +96,6 @@
       margin: 0 0 32px;
     }
 
-    .notice {
-      margin: 0 0 40px;
-      padding: 18px 20px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--panel);
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
     section {
       border-top: 1px solid var(--line);
       padding: 28px 0;
@@ -162,12 +152,7 @@
     </div>
 
     <h1>Datenschutzerklärung</h1>
-    <p class="stand">Stand: 2026-06-08</p>
-    <p class="notice">
-      Diese Seite bildet den aktuellen Inhaltsstand aus <code>docs/privacy-output/privacy.md</code> ab.
-      Noch nicht abschließend geklärte Angaben sind im Text als offen markiert und müssen vor
-      einer finalen Veröffentlichung fachlich und organisatorisch geprüft werden.
-    </p>
+    <p class="stand">Stand: 2026-06-09</p>
 
     <section aria-labelledby="section-1">
       <h2 id="section-1">1. Verantwortlicher</h2>
@@ -337,13 +322,14 @@
         Eine Übermittlung in Drittländer, insbesondere die USA, kann nicht ausgeschlossen werden.
         Das Cloudflare Data Processing Addendum wurde heruntergeladen und dokumentiert.
         Die Standardvertragsklauseln (SCC) sind im Cloudflare-DPA enthalten bzw. dort ausdrücklich
-        referenziert. Offene Punkte betreffen vor allem die praktische Retention sowie die konkrete
-        operative Cloudflare-Konfiguration.
+        referenziert. Weitere Details zur Speicherdauer richten sich nach der jeweiligen
+        Cloudflare-Konfiguration.
       </p>
       <h3>Speicherdauer</h3>
       <p>
         Die Speicherdauer richtet sich nach der jeweiligen Cloudflare-Konfiguration und den
-        Cloudflare-Bedingungen. Diese Angabe muss final anhand des Cloudflare-Kontos geprüft werden.
+        Cloudflare-Bedingungen. In Cloudflare Security Analytics sind gesampelte Sicherheitsereignisse
+        mit Zeit, Source IP, Host, Pfad und Maßnahme sichtbar.
       </p>
       <h3>Pflicht zur Bereitstellung</h3>
       <p>Die Verarbeitung ist technisch erforderlich, wenn die Website über Cloudflare aufgerufen wird.</p>
@@ -463,15 +449,17 @@
       </ul>
       <h3>Drittlandübermittlung</h3>
       <p>
-        Offen. Dies hängt von den eingesetzten E-Mail- und Telekommunikationsanbietern sowie deren
-        Vertrags- und Infrastrukturkonfiguration ab. Für IONOS und Vodafone sollten die jeweils
-        einschlägigen Datenschutz- und Vertragsunterlagen intern dokumentiert werden.
+        Eine Drittlandübermittlung durch die Kontaktkommunikation ist nach aktueller Einschätzung
+        nicht ersichtlich. Maßgeblich bleiben die jeweiligen Datenschutz- und Vertragsbedingungen
+        von IONOS und Vodafone.
       </p>
       <h3>Speicherdauer</h3>
       <p>
-        Anfragen werden gespeichert, solange dies für die Bearbeitung erforderlich ist. Darüber
-        hinaus können Daten gespeichert werden, wenn gesetzliche Aufbewahrungspflichten bestehen
-        oder berechtigte Interessen an der Dokumentation der Kommunikation bestehen.
+        Allgemeine Kontaktanfragen per E-Mail oder Telefon werden nach Abschluss der Anfrage
+        grundsätzlich innerhalb von 12 Monaten gelöscht, sofern keine gesetzliche
+        Aufbewahrungspflicht oder laufende geschäftliche Beziehung besteht. Vertrags-, projekt-
+        oder abrechnungsrelevante Kommunikation wird entsprechend gesetzlicher und geschäftlicher
+        Erforderlichkeit aufbewahrt.
       </p>
       <h3>Pflicht zur Bereitstellung</h3>
       <p>
@@ -515,7 +503,7 @@
         gewählte Sprache beim nächsten Seitenaufruf wiederzuverwenden.
       </p>
       <h3>Empfänger</h3>
-      <p>Keine Uebermittlung an 138Labs erkennbar. Die Speicherung erfolgt im Browser des Nutzers.</p>
+      <p>Keine Übermittlung an 138Labs erkennbar. Die Speicherung erfolgt im Browser des Nutzers.</p>
       <h3>Drittlandübermittlung</h3>
       <p>Keine erkennbar.</p>
       <h3>Speicherdauer</h3>
@@ -543,7 +531,7 @@
         Matomo, Plausible, PostHog, Hotjar oder vergleichbare Dienste erkennbar.
       </p>
       <p>
-        Offen: In der internen Roadmap ist Analytics/Conversion-Tracking als mögliche spätere
+        In der internen Roadmap ist Analytics/Conversion-Tracking zudem als mögliche spätere
         Erweiterung genannt. Vor einer Umsetzung muss die Datenschutzerklärung aktualisiert und
         ggf. eine Einwilligungslösung eingeführt werden.
       </p>
@@ -629,9 +617,10 @@
         oder Verteidigung von Rechtsansprüchen.
       </p>
       <p>
-        Offen: Die konkrete Speicherdauer für Cloudflare-Logs und E-Mail-Kommunikation muss final
-        technisch und organisatorisch festgelegt werden. Für Docker-Containerlogs ist aktuell eine
-        größenbasierte Rotation dokumentiert.
+        Die konkrete Speicherdauer für Cloudflare-Logs richtet sich nach der jeweiligen
+        Cloudflare-Konfiguration und den Cloudflare-Bedingungen. Für Docker-Containerlogs ist aktuell eine
+        größenbasierte Rotation dokumentiert. Für allgemeine Kontaktanfragen gilt der in
+        Abschnitt 8 dokumentierte Lösch- und Aufbewahrungsprozess.
       </p>
     </section>
 
@@ -704,8 +693,8 @@
         bei Cloudflare sowie beim Anklicken externer Links zu LinkedIn oder GitHub nicht ausgeschlossen werden.
       </p>
       <p>
-        Für Cloudflare sind die konkrete Vertragslage, das Data Processing Addendum,
-        Standardvertragsklauseln und ggf. weitere Garantien final zu prüfen.
+        Für Cloudflare wurden das Data Processing Addendum und die darin enthaltenen bzw.
+        referenzierten Standardvertragsklauseln dokumentiert.
       </p>
       <p>
         Bei externen Links erfolgt eine Übermittlung erst, wenn Sie den jeweiligen Link aktiv anklicken.
@@ -713,9 +702,9 @@
     </section>
 
     <section aria-labelledby="section-25">
-      <h2 id="section-25">25. Stand und Aenderungen</h2>
+      <h2 id="section-25">25. Stand und Änderungen</h2>
       <p>
-        Diese Datenschutzerklärung basiert auf dem am 2026-06-08 geprüften Code-Stand der Website.
+        Diese Datenschutzerklärung basiert auf dem am 2026-06-09 geprüften Code-Stand der Website.
         Wenn neue Funktionen wie Kontaktformulare, Newsletter, Analytics, Buchungstools, eingebettete
         Inhalte oder KI-Dienste eingebunden werden, muss diese Datenschutzerklärung vor der
         Veröffentlichung aktualisiert werden.

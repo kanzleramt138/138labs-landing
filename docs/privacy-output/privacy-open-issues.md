@@ -33,8 +33,7 @@ Diese Punkte sollten geklaert sein, bevor auf der Website eine Aussage wie "DSGV
 - Die SCC sind im Cloudflare-DPA enthalten bzw. dort ausdruecklich referenziert.
 - Aktivierte Cloudflare-Features wurden technisch geprueft: Proxy/CDN, automatische DDoS-Schutzmechanismen, Cloudflare Managed Ruleset, Block AI Bots, Browser Integrity Check, Email Address Obfuscation, Challenge Passage.
 - Nicht benoetigte Features deaktivieren.
-- Pruefen, ob Cloudflare Cookies oder sonstige Identifikatoren fuer diese Domain setzt.
-- Falls Cloudflare Cookies/IDs oder Analytics-Features aktiv sind, Einwilligungsbedarf gesondert pruefen.
+- Cloudflare Security Analytics zeigt produktiv gesampelte Logs mit Zeit, Source IP, Host, Path und Action.
 
 ### 4. SSL-/TLS-Verschluesselung
 
@@ -48,8 +47,8 @@ Diese Punkte sollten geklaert sein, bevor auf der Website eine Aussage wie "DSGV
 - E-Mail-Anbieter fuer `robert@138labs.de` benennen.
 - Telefonanbieter bzw. Kommunikationsdienstleister intern dokumentieren.
 - Auftragsverarbeitungsvertraege bzw. Datenschutzhinweise der Anbieter pruefen.
-- Speicherdauer fuer Kontaktanfragen festlegen, zum Beispiel bis Abschluss der Anfrage plus erforderliche handels-/steuerrechtliche Aufbewahrung.
-- Verfahren fuer Loeschung oder Archivierung alter Anfragen definieren.
+- Speicherkonzept festgelegt: allgemeine Kontaktanfragen nach Abschluss grundsaetzlich innerhalb von 12 Monaten loeschen, sofern keine gesetzliche Pflicht oder laufende Geschaeftsbeziehung besteht.
+- Verfahren fuer Loeschung oder Archivierung alter Anfragen intern organisatorisch umsetzen.
 
 ### 6. Datenminimierung und kuenftige Erweiterungen
 

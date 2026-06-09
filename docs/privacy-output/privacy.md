@@ -131,11 +131,11 @@ Cloudflare und ggf. mit Cloudflare verbundene Unterauftragsverarbeiter.
 
 Drittlanduebermittlung:
 
-Eine Uebermittlung in Drittlaender, insbesondere die USA, kann nicht ausgeschlossen werden. Das Cloudflare Data Processing Addendum wurde heruntergeladen und dokumentiert. Die Standardvertragsklauseln (SCC) sind im Cloudflare-DPA enthalten bzw. dort ausdruecklich referenziert. Offene Punkte betreffen vor allem die praktische Retention sowie die konkrete operative Cloudflare-Konfiguration.
+Eine Uebermittlung in Drittlaender, insbesondere die USA, kann nicht ausgeschlossen werden. Das Cloudflare Data Processing Addendum wurde heruntergeladen und dokumentiert. Die Standardvertragsklauseln (SCC) sind im Cloudflare-DPA enthalten bzw. dort ausdruecklich referenziert. Weitere Details zur Speicherdauer richten sich nach der jeweiligen Cloudflare-Konfiguration.
 
 Speicherdauer:
 
-Die Speicherdauer richtet sich nach der jeweiligen Cloudflare-Konfiguration und den Cloudflare-Bedingungen. Diese Angabe muss final anhand des Cloudflare-Kontos geprueft werden.
+Die Speicherdauer richtet sich nach der jeweiligen Cloudflare-Konfiguration und den Cloudflare-Bedingungen. In Cloudflare Security Analytics sind gesampelte Sicherheitsereignisse mit Zeit, Source IP, Host, Pfad und Massnahme sichtbar.
 
 Pflicht zur Bereitstellung:
 
@@ -235,11 +235,11 @@ Empfaenger:
 
 Drittlanduebermittlung:
 
-Offen. Dies haengt von den eingesetzten E-Mail- und Telekommunikationsanbietern sowie deren Vertrags- und Infrastrukturkonfiguration ab. Fuer IONOS und Vodafone sollten die jeweils einschlaegigen Datenschutz- und Vertragsunterlagen intern dokumentiert werden.
+Eine Drittlanduebermittlung durch die Kontaktkommunikation ist nach aktueller Einschaetzung nicht ersichtlich. Massgeblich bleiben die jeweiligen Datenschutz- und Vertragsbedingungen von IONOS und Vodafone.
 
 Speicherdauer:
 
-Anfragen werden gespeichert, solange dies fuer die Bearbeitung erforderlich ist. Darueber hinaus koennen Daten gespeichert werden, wenn gesetzliche Aufbewahrungspflichten bestehen oder berechtigte Interessen an der Dokumentation der Kommunikation bestehen.
+Allgemeine Kontaktanfragen per E-Mail oder Telefon werden nach Abschluss der Anfrage grundsaetzlich innerhalb von 12 Monaten geloescht, sofern keine gesetzliche Aufbewahrungspflicht oder laufende geschaeftliche Beziehung besteht. Vertrags-, projekt- oder abrechnungsrelevante Kommunikation wird entsprechend gesetzlicher und geschaeftlicher Erforderlichkeit aufbewahrt.
 
 Pflicht zur Bereitstellung:
 
@@ -310,7 +310,7 @@ Nach aktuellem Code-Stand werden keine Analytics- oder Marketing-Cookies eingese
 
 Aktuell sind im Website-Code keine Analyse- oder Trackingdienste wie Google Analytics, Matomo, Plausible, PostHog, Hotjar oder vergleichbare Dienste erkennbar.
 
-Offen: In der internen Roadmap ist Analytics/Conversion-Tracking als moegliche spaetere Erweiterung genannt. Vor einer Umsetzung muss die Datenschutzerklaerung aktualisiert und ggf. eine Einwilligungsloesung eingefuehrt werden.
+In der internen Roadmap ist Analytics/Conversion-Tracking zudem als moegliche spaetere Erweiterung genannt. Vor einer Umsetzung muss die Datenschutzerklaerung aktualisiert und ggf. eine Einwilligungsloesung eingefuehrt werden.
 
 ## 14. Newsletter
 
@@ -378,7 +378,7 @@ Soweit in dieser Datenschutzerklaerung keine konkrete Speicherdauer genannt ist,
 
 Darueber hinaus speichern wir Daten, wenn gesetzliche Aufbewahrungspflichten bestehen oder wir ein berechtigtes Interesse an der weiteren Speicherung haben, etwa zur Geltendmachung, Ausuebung oder Verteidigung von Rechtsanspruechen.
 
-Offen: Die konkrete Speicherdauer fuer Cloudflare-Logs und E-Mail-Kommunikation muss final technisch und organisatorisch festgelegt werden. Fuer Docker-Containerlogs ist aktuell eine groessenbasierte Rotation dokumentiert.
+Die konkrete Speicherdauer fuer Cloudflare-Logs richtet sich nach der jeweiligen Cloudflare-Konfiguration und den Cloudflare-Bedingungen. Fuer Docker-Containerlogs ist aktuell eine groessenbasierte Rotation dokumentiert. Fuer allgemeine Kontaktanfragen gilt der in Abschnitt 8 dokumentierte Loesch- und Aufbewahrungsprozess.
 
 ## 20. Betroffenenrechte
 
@@ -422,10 +422,10 @@ Wir verarbeiten die betroffenen personenbezogenen Daten dann nicht mehr, es sei 
 
 Eine Uebermittlung personenbezogener Daten in Laender ausserhalb der EU/des EWR kann insbesondere bei Cloudflare sowie beim Anklicken externer Links zu LinkedIn oder GitHub nicht ausgeschlossen werden.
 
-Fuer Cloudflare sind die konkrete Vertragslage, das Data Processing Addendum, Standardvertragsklauseln und ggf. weitere Garantien final zu pruefen.
+Fuer Cloudflare wurden das Data Processing Addendum und die darin enthaltenen bzw. referenzierten Standardvertragsklauseln dokumentiert.
 
 Bei externen Links erfolgt eine Uebermittlung erst, wenn Sie den jeweiligen Link aktiv anklicken.
 
 ## 25. Stand und Aenderungen
 
-Diese Datenschutzerklaerung basiert auf dem am 2026-06-08 geprueften Code-Stand der Website. Wenn neue Funktionen wie Kontaktformulare, Newsletter, Analytics, Buchungstools, eingebettete Inhalte oder KI-Dienste eingebunden werden, muss diese Datenschutzerklaerung vor der Veroeffentlichung aktualisiert werden.
+Diese Datenschutzerklaerung basiert auf dem am 2026-06-09 geprueften Code-Stand der Website. Wenn neue Funktionen wie Kontaktformulare, Newsletter, Analytics, Buchungstools, eingebettete Inhalte oder KI-Dienste eingebunden werden, muss diese Datenschutzerklaerung vor der Veroeffentlichung aktualisiert werden.
